@@ -1,0 +1,23 @@
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+    background-color: #6ab414;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+
+
+}
+
+.logo {
+    width: 100px;
+    
+}
+
+.title {
+    font-size: 24px;
+    font-weight: bold;
+}
