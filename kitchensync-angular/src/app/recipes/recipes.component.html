@@ -1,0 +1,31 @@
+<div>
+
+    <input id="query" type="text" placeholder="Search recipes..." [(ngModel)]="query"/>
+    <h1>Recipes</h1>
+    <button (click)="fetchRecipes()">Load Recipes</button>
+
+    <!-- Show loading message -->
+    <!-- <p *ngIf="loading">Loading recipes...</p> -->
+
+    <!-- Show error message -->
+    <!-- <p *ngIf="error">{{ error }}</p> -->
+
+    <!-- Display recipes -->
+    <div>
+        <ul>
+        @for (recipe of recipes.results; track $index) {
+
+                <li>
+                <h3>{{ recipe.title }}</h3>
+                <img [src]="recipe.image" [alt]="recipe.title" width="150" />
+                </li>
+
+        }
+        </ul>
+    </div>
+
+    <!-- Fallback if no recipes -->
+    <ng-template #noRecipes>
+      <p>No recipes found. Try a different search.</p>
+    </ng-template>
+  </div>
