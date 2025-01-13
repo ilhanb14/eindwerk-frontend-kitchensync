@@ -1,14 +1,14 @@
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterOutlet } from '@angular/router';
 import { FullCalendarModule } from '@fullcalendar/angular';
 import { CalendarOptions } from '@fullcalendar/core'; 
 import dayGridPlugin from '@fullcalendar/daygrid';
 import interactionPlugin from '@fullcalendar/interaction';
+
 @Component({
     selector: 'app-calendar',
     standalone: true,
-    imports: [CommonModule, RouterOutlet, FullCalendarModule],
+    imports: [CommonModule, FullCalendarModule],
     templateUrl: './calendar.component.html',
     styleUrls: ['./calendar.component.css']
 })
