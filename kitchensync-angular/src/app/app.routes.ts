@@ -9,7 +9,7 @@ import { LoginComponent } from './login/login.component';
 export const routes: Routes = [
     { path: 'home', component: HomeComponent },
     { path: 'recipes', component: RecipesComponent },
-    { path: 'calender', component: CalendarComponent },
+    { path: 'calendar', component: CalendarComponent },
     { path: 'user', component: UserComponent },
     { path: 'login', component: LoginComponent },
     { path: '**', redirectTo: '' }
