@@ -1,12 +1,10 @@
-import { Component, Component, Signal } from "@angular/core";
-import { CommonModule } from "@angular/common";
-import { RouterOutlet } from "@angular/router";
-import {FullCalendarModule} from "@fullcallendar/angular";
-import {calendaroptions} from "@fullcallendar/core";
-import daygridPlugin from "@fullcallendar/daygrid";
-import interactionplugin from "@fullcallendar/interaction";
-import timegridPlugin from "@fullcallendar/timegrid";
-import listplugin from "@fullcallendar/list";
+import { Component } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { RouterOutlet } from '@angular/router';
+import { FullCalendarModule } from '@fullcalendar/angular';
+import { CalendarOptions } from '@fullcalendar/core'; 
+import dayGridPlugin from '@fullcalendar/daygrid';
+import interactionPlugin from '@fullcalendar/interaction';
 @Component({
     selector: 'app-calendar',
     standalone: true,
@@ -16,33 +14,17 @@ import listplugin from "@fullcallendar/list";
 })
 
 export class CalendarComponent {
-    calendarvisible = true;
-    calendaroptions = signal<calendaroptions>({
-        plugins: [
-            daygridPlugin,
-            interactionplugin,
-            timegridPlugin,
-            listplugin,
-        ],
-        headertoolbar: {
-            left: 'prev,next today',
-            center: 'title',
-            right: 'dayGridMonth,timeGridWeek,timelistWeek',
-        },
+    calendarOptions: CalendarOptions = {
         initialView: 'dayGridMonth',
-        initialEvents: INITIAL_EVENTS,
-        weekends: true,
-        editable: true,
-        selectable: true,  
-        selectMirror: true,
-        dayMaxEvents: true,
-        select: this.handleDateSelect.bind(this),
-        eventClick: this.handleEventClick.bind(this),
-        eventDrop: this.handleEventDrop.bind(this),
-    });
-    
-    handleCalendartoggle() {
-        this.calendaroptions.update((bool) => !bool);
-        }
-        
-}
+        plugins: [dayGridPlugin, interactionPlugin],
+        dateClick: (arg) =>this.handleDateClick(arg),
+        events: [
+          { title: 'event 1', date: '2023-06-01' },
+          { title: 'event 2', date: '2023-06-02' },
+        ]
+      };
+
+      handleDateClick(arg: any) {
+        alert('date click! ' + arg.dateStr);
+      }
+    }
