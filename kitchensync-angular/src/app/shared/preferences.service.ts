@@ -17,4 +17,13 @@ export class PreferencesService {
       throw error;
     }
   }
+
+  async getPreferenceById(id: number) {
+    try { 
+      const response = await fetch(this.url + "preferences/" + id);
+      return await response.json();
+    } catch (error) {
+      console.error("Error fetching preference by id:", error);
+    }
+  }
 }
