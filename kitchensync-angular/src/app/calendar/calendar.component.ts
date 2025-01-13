@@ -8,8 +8,8 @@ import { CalendarModule } from 'angular-calendar';
   standalone: true,
   imports: [CalendarModule],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
-  templateUrl: './calender.component.html',
-  styleUrls: ['./calender.component.css']
+  templateUrl: './calendar.component.html',
+  styleUrls: ['./calendar.component.css']
 })
 
 export class CalendarComponent {
