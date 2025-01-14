@@ -16,7 +16,7 @@ import interactionPlugin, { DateClickArg } from '@fullcalendar/interaction';
 
 export class CalendarComponent {
     calendarOptions: CalendarOptions = {
-      initialView: 'dayGridWeek',
+      initialView: 'dayGridMonth',
       dateClick:(arg)  =>this.handleDateClick(arg), 
       headerToolbar : {
         left: 'prev,next today',
