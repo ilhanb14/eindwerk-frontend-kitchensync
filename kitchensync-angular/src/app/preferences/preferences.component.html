@@ -1,0 +1,10 @@
+<h3>Preferences</h3>
+<div>
+<ul>
+    @for (preference of preferenceList; track $index) {
+        <li>
+            {{ preference }} <input type="checkbox"> Important? <input type="checkbox">
+        </li>
+    }
+</ul>
+</div>
