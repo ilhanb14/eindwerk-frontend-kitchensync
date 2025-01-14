@@ -56,7 +56,7 @@ export class PreferencesService {
   
     async deleteUserPreference(userId: number, preferenceId: number) {
       try {
-        await fetch(this.url + "preferenceuser", {
+        await fetch(this.url + "preferenceuser/" + userId + "/" + preferenceId, {
           method: 'DELETE'
         });
       } catch (error) {
