@@ -16,7 +16,7 @@ export class SpoonacularService {
         ...query,
         apiKey: this.apiKey
       }).toString();
-      
+  
       const response = await fetch(`${this.apiUrl}/recipes/complexSearch?${queryParams}`,  {
         method: 'GET',
         headers: {
@@ -32,7 +32,30 @@ export class SpoonacularService {
       console.log(data);
       return data;
     } catch (error) {
-      console.error('There was a problem with the fetch operation:', error);
+      console.error('There was a problem with the getRecipes fetch operation:', error);
+      throw error;
+    } 
+  }
+
+  async getMealById(id: number) {
+    try {      
+      const response = await fetch(`${this.apiUrl}/recipes/${id}/information?includeNutrition=true`,  {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-api-key': this.apiKey
+        }
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const data = await response.json();
+      console.log('data:', data);
+      return data;
+    } catch (error) {
+      console.error('There was a problem with the getMealById fetch operation:', error);
       throw error;
     } 
   }
