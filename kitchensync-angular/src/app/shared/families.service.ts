@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { UsersService } from './users.service';
 
 @Injectable({
   providedIn: 'root'
@@ -6,7 +7,7 @@ import { Injectable } from '@angular/core';
 export class FamiliesService {
   private url = "http://127.0.0.1:8000/api/"
 
-  constructor() { }
+  constructor(private usersService: UsersService) { }
 
   async getById(id: number) {
     try {
@@ -57,5 +58,10 @@ export class FamiliesService {
     } catch(error) {
       console.error("Error deleting family:", error);
     }
+  }
+
+  async getUsersInFamily(familyId: number) {
+    let allUsers: any[] = await this.usersService.getAll();
+    return allUsers.filter(user => user.family_id === familyId);
   }
 }
