@@ -44,3 +44,10 @@ b { /* used for event dates/times */
   max-width: 1100px;
   margin: 0 auto;
 }
+
+.button-container {
+  margin-bottom: 1rem;
+}
+button {
+  margin-right: 0.5rem;
+}
