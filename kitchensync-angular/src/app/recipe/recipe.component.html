@@ -1,0 +1,39 @@
+<!-- First, add a check for if recipe exists to avoid errors -->
+@if (recipe) {
+
+  <h1>{{ recipe.title }}</h1>
+
+    <!-- For images -->
+    <img [src]="recipe.image" [alt]="recipe.title">
+
+    
+    <div class="recipe-details">
+      <p>Summary:</p>
+      <div [innerHTML]="recipe.summary"></div>
+      <p>Cooking Time: {{ recipe.cookingMinutes }} minutes</p>
+      
+      <!-- For arrays, you can use *ngFor -->
+      <h2>Ingredients:</h2>
+      <ul>
+        @for (ingredient of recipe.extendedIngredients; track $index) {
+        <li>
+          {{ ingredient.nameClean }}
+        </li>
+        }
+      </ul>
+      
+      <!-- For nested objects -->
+      <div class="nutrition">
+        <p>Calories: {{ recipe.nutrition.nutrients[0].amount }}</p>
+        <p>Protein: {{ recipe.nutrition.nutrients[1].amount }}g</p>
+      </div>
+      
+    </div>
+
+}
+  
+  <!-- Optional: Show loading state -->
+@if (!recipe) {
+    <p>Loading recipe...</p>
+}
+
