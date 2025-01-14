@@ -10,4 +10,21 @@ div {
   li {
     margin: 10px 0;
   }
+
+  .recipe-list {
+    list-style: none;
+    padding: 0;
+  }
+  .recipe-item {
+    margin-bottom: 20px;
+  }
+  .recipe-image {
+    cursor: pointer;
+  }
+  .recipe-details {
+    margin-top: 10px;
+    padding: 10px;
+    background-color: #f5f5f5;
+    border-radius: 4px;
+  }
   
