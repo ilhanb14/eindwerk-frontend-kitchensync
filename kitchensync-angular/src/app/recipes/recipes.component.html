@@ -4,22 +4,38 @@
     <h1>Recipes</h1>
     <button (click)="fetchRecipes()">Load Recipes</button>
 
-    <!-- Show loading message -->
-    <!-- <p *ngIf="loading">Loading recipes...</p> -->
 
-    <!-- Show error message -->
-    <!-- <p *ngIf="error">{{ error }}</p> -->
+    <!-- Show loading message -->
+    @if (loading) {
+      <p>Loading recipes...</p>
+    }
 
     <!-- Display recipes -->
     <div>
-        <ul>
-        @for (recipe of recipes.results; track $index) {
+        <ul class="recipe-list">
+        @for (recipe of smallRecipes.results; track recipe.id) {
 
-                <li>
-                <h3>{{ recipe.title }}</h3>
-                <img [src]="recipe.image" [alt]="recipe.title" width="150" />
-                </li>
-
+                <li class="recipe-item">
+                  <h3>{{ recipe.title }}</h3>
+                  <img 
+                    [src]="recipe.image" 
+                    [alt]="recipe.title" 
+                    width="150" 
+                    (click)="getRecipeDetails(recipe.id)"
+                    class="recipe-image"
+                  >
+                  @if (expandedMeal === recipe.id) {
+                    <div class="recipe-details">
+                      @if (selectedMeal(); as meal) {
+                        <p><strong>Summary:</strong></p>
+                        <div [innerHTML]="meal.summary"></div>
+                        <a [routerLink]="['/recipe', recipe.id]" target="_blank">View Recipe</a>
+                      } @else {
+                        <p>Loading recipe details...</p>                      
+                      }
+                    </div>
+                  }
+              </li>
         }
         </ul>
     </div>
