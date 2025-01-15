@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { PreferencesComponent } from "../preferences/preferences.component";
 import { UsersService } from '../shared/users.service';
 import { FamiliesService } from '../shared/families.service';
+import { UserTypesService } from '../shared/usertypes.service';
 
 @Component({
   selector: 'app-user',
@@ -10,24 +11,33 @@ import { FamiliesService } from '../shared/families.service';
   styleUrl: './user.component.css'
 })
 export class UserComponent {
-  private firstName: string = "";
-  private lastName: string = "";
-  private familyName: string = "";
-  private userType: string = "";
-  private email: string = "";
-  private family: any[] = [];
+  firstName: string = "";
+  lastName: string = "";
+  familyName: string = "";
+  userType: string = "";
+  email: string = "";
+  family: any[] = [];
+  private userId = 1; // TODO: get user id based on logged in user
 
-  constructor(private usersService: UsersService, private familiesService: FamiliesService) {
+  constructor(private usersService: UsersService, private familiesService: FamiliesService, private userTypesService : UserTypesService) {
     this.fetchUserData();
-    this.fetchFamily();
   }
 
   async fetchUserData() {
-    // TODO fetch and display user data
+    const userData = await this.usersService.getOne(this.userId);
+
+    this.fetchFamily(userData.family_id);
+
+    this.firstName = userData.first_name;
+    this.lastName = userData.last_name;
+    this.email = userData.email;
+
+    this.userTypesService.getOne(userData.user_type_id).then(result => this.userType = result.type);
   }
 
-  async fetchFamily() {
+  async fetchFamily(familyId: number) {
     // TODO fetch and display names of family members
+
     // TODO link to family page
   }
 }
