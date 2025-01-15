@@ -2,9 +2,12 @@
 <div>
 <ul>
     @for (preference of preferenceList; track $index) {
-        <li>
-            {{ preference }} <input type="checkbox"> Important? <input type="checkbox">
+        <li [id]="'pref-'+preference.id">
+            {{ preference.name[0].toUpperCase() + preference.name.substr(1).toLowerCase() }} @if (preference.allergy) { allergy }
+            <input [id]="'check-'+preference.id" type="checkbox" (click)="preferenceToggled(preference.id)"> Important? <input [id]="'important-'+preference.id" type="checkbox" disabled="true">
         </li>
     }
+
+    <button id="save" (click)="saveChanges()">Save changes</button>
 </ul>
 </div>
