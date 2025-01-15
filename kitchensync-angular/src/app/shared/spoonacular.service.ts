@@ -37,9 +37,9 @@ export class SpoonacularService {
     } 
   }
 
-  async getMealById(id: number) {
+  async getMealById(id: number, includeNutrition: boolean = true) {
     try {      
-      const response = await fetch(`${this.apiUrl}/recipes/${id}/information?includeNutrition=true`,  {
+      const response = await fetch(`${this.apiUrl}/recipes/${id}/information?includeNutrition=${includeNutrition ? "true" : "false"}`,  {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
