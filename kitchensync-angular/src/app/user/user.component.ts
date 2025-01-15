@@ -3,10 +3,11 @@ import { PreferencesComponent } from "../preferences/preferences.component";
 import { UsersService } from '../shared/users.service';
 import { FamiliesService } from '../shared/families.service';
 import { UserTypesService } from '../shared/usertypes.service';
+import { LikedMealsComponent } from "../likedmeals/likedmeals.component";
 
 @Component({
   selector: 'app-user',
-  imports: [PreferencesComponent],
+  imports: [PreferencesComponent, LikedMealsComponent],
   templateUrl: './user.component.html',
   styleUrl: './user.component.css'
 })
