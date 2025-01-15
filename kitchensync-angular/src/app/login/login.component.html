@@ -1,12 +1,13 @@
 <div class="login">
     <h2>Login to your account</h2>
-    <form>
-      <label for="username">Username</label>
-      <input type="text" id="username" name="username">
+    
+      <label for="email">Email: </label>
+      <input type="text" id="email" name="email" #emailInput>
   
-      <label for="password">Password</label>
-      <input type="password" id="password" name="password">
+      <label for="password">Password: </label>
+      <input type="password" id="password" name="password" #passwordInput>
   
-      <button type="submit">Login</button>
-    </form>
-  </div>
+      <button (click)="login(emailInput.value, passwordInput.value)">Login</button>
+    
+    <p>Don't have an account? <a routerLink="/register">Register</a></p>
+</div>
