@@ -1,0 +1,28 @@
+import { Injectable } from '@angular/core';
+
+@Injectable({
+  providedIn: 'root'
+})
+export class UsersService {
+  private url = "http://127.0.0.1:8000/api/"
+
+  constructor() { }
+
+  async getAll() {
+    try {
+      const response = await fetch(this.url + "users/");
+      return await response.json();
+    } catch (error) {
+      console.error("Error fetching users:", error);
+    }
+  }
+
+  async getOne(userId: number) {
+    try {
+      const response = await fetch(this.url + "users/" + userId);
+      return await response.json();
+    } catch (error) {
+      console.error("Error fetching user:", error);
+    }
+  }
+}
