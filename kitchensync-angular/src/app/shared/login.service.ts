@@ -25,9 +25,7 @@ export class LoginService {
       }
 
       const data = await response.json();
-      console.log(data);
 
-      localStorage.setItem('token', data.remember_token);
       return data;
     } catch (error) {
       console.error('There was a problem with the login fetch operation:', error);
@@ -41,7 +39,7 @@ export class LoginService {
       headers: {
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify({ token })
+      body: JSON.stringify({ "remember_token": token })
     });
   }
 
