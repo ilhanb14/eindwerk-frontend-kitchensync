@@ -4,7 +4,7 @@
     @for (meal of likedMeals; track $index) {
         <div class="liked-meal" [id]="'like-'+meal.id">
             {{meal.title}} <img [src]="meal.image" width="150px">
-            <button [id]="'unlike-'+meal.id">Unlike</button>
+            <button [id]="'unlike-'+meal.id" (click)="unlikeClicked(meal.id)">Unlike</button>
         </div>
     }
 </div>
