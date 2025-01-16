@@ -21,7 +21,18 @@
         </li>
         }
       </ul>
-      
+
+      <h2>Instructions:</h2>
+      @if (recipe.analyzedInstructions) {
+        <ol>
+          @for (instruction of recipe.analyzedInstructions[0].steps; track $index) {
+          <li>
+            {{ instruction.step }}
+          </li>
+          }
+        </ol>
+      }
+  
       <!-- For nested objects -->
       <div class="nutrition">
         <p>Calories: {{ recipe.nutrition.nutrients[0].amount }}</p>
