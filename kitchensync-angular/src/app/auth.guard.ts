@@ -18,6 +18,10 @@ export const authGuard: CanActivateFn = async (route, state) => {
       
       // If the token is valid, allow access to the route
       if (data.valid) {
+        console.log(data);
+        sessionStorage.setItem('id', data.user.id);
+        sessionStorage.setItem('first_name', data.user.first_name);
+        sessionStorage.setItem('last_name', data.user.last_name);
         return true;
       }
     } catch (error) {
@@ -30,6 +34,6 @@ export const authGuard: CanActivateFn = async (route, state) => {
   localStorage.setItem('redirectUrl', state.url);
   
   // If no token, redirect to login page
-  router.navigate(['/login']);
+  // router.navigate(['/login']);
   return false;
 };
