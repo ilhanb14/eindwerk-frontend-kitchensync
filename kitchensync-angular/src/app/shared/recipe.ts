@@ -7,7 +7,7 @@ export interface Recipe {
     cookingMinutes: number; // Cooking time in minutes
     readyInMinutes: number; // Preparation time in minutes
     servings: number; // Number of servings
-    analyzedInstructions?: string[]; // Array of analyzed cooking instructions (optional)
+    analyzedInstructions?: Instructions[]; // Array of analyzed cooking instructions (optional)
     instructions?: string; // Cooking instructions (optional)
     extendedIngredients?: ExtendedIngredient[]; // Array of ingredients (optional)
     sourceUrl?: string; // Original source URL for the recipe (optional)
@@ -90,4 +90,30 @@ export interface Nutrition {
 
 export interface RecipeResponse {
     "results": Recipe[]
+}
+
+export interface Instructions {
+    name: string;
+    steps: Step[];
+}
+
+export interface Step {
+    number: number;
+    step: string;
+    ingredients: IngredientStep[];
+    equipment: Equipment[];
+}
+
+export interface IngredientStep {
+    id: number;
+    name: string;
+    localizedName: string;
+    image: string;
+}
+
+export interface Equipment {
+    id: number;
+    name: string;
+    localizedName: string;
+    image: string;
 }
