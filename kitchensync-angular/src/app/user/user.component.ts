@@ -18,7 +18,7 @@ export class UserComponent {
   userType: string = "";
   email: string = "";
   family: any[] = [];
-  private userId = 1; // TODO: get user id based on logged in user
+  private userId: number = Number(sessionStorage.getItem('id'))
 
   constructor(private usersService: UsersService, private familiesService: FamiliesService, private userTypesService : UserTypesService) {
     this.fetchUserData();
