@@ -59,7 +59,7 @@ export class LoginService {
       headers: {
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify({ token })
+      body: JSON.stringify({ "remember_token": token })
     });
   }
 }
