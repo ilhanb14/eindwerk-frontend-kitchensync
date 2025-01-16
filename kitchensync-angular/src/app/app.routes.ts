@@ -10,10 +10,10 @@ import { LoginComponent } from './login/login.component';
 
 export const routes: Routes = [
     { path: 'home', component: HomeComponent },
-    { path: 'recipes', component: RecipesComponent }, // Add canActivate: [authGuard]
-    { path: 'recipe/:id', component: RecipeComponent }, // Add canActivate: [authGuard]
-    { path: 'calendar', component: CalendarComponent }, // Add canActivate: [authGuard]
-    { path: 'user', component: UserComponent }, // Add canActivate: [authGuard]
+    { path: 'recipes', component: RecipesComponent, canActivate: [authGuard] }, // Add canActivate: [authGuard]
+    { path: 'recipe/:id', component: RecipeComponent, canActivate: [authGuard] }, // Add canActivate: [authGuard]
+    { path: 'calendar', component: CalendarComponent, canActivate: [authGuard] }, // Add canActivate: [authGuard]
+    { path: 'user', component: UserComponent, canActivate: [authGuard] }, // Add canActivate: [authGuard]
     { path: 'login', component: LoginComponent },
     { path: '**', redirectTo: 'home' }
 ];
