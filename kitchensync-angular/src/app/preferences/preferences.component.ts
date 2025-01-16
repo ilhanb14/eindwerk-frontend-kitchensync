@@ -10,7 +10,7 @@ import { PreferencesService } from '../shared/preferences.service';
 export class PreferencesComponent {
   preferenceList: any[] = [];  // TODO: change type
   userPreferences: any[] = [];
-  userId: number = 1; // TODO user id based on currently logged in user
+  userId: number = Number(sessionStorage.getItem('id')) || 0;
 
   constructor(private preferencesService: PreferencesService) {
     this.fetchPreferences();

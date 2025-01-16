@@ -10,7 +10,7 @@ import { SpoonacularService } from '../shared/spoonacular.service';
 })
 export class LikedMealsComponent {
   likedMeals: any[] = [];
-  private userId: number = 1; // TODO: get userId from local storage
+  private userId: number = Number(sessionStorage.getItem('id'));
 
   constructor(private likedMealsService: LikedMealsService, private spoonacularService: SpoonacularService) {
     this.fetchLikedMeals();
