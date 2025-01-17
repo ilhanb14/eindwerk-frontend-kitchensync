@@ -5,11 +5,10 @@
 
     <!-- For images -->
     <img [src]="recipe.image" [alt]="recipe.title">
-
     
     <div class="recipe-details">
       <p>Summary:</p>
-      <div [innerHTML]="recipe.summary"></div>
+      <div [innerHTML]="recipe.summary | safeHtml"></div>
       <p>Cooking Time: {{ recipe.cookingMinutes }} minutes</p>
       
       <!-- For arrays, you can use *ngFor -->

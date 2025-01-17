@@ -2,10 +2,11 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Recipe } from '../shared/recipe';
 import { SpoonacularService } from '../shared/spoonacular.service';
+import { SafeHtmlPipe } from '../pipes/safe-html.pipe';
 
 @Component({
   selector: 'app-recipe',
-  imports: [],
+  imports: [SafeHtmlPipe],
   templateUrl: './recipe.component.html',
   styleUrl: './recipe.component.css'
 })
@@ -14,7 +15,10 @@ export class RecipeComponent implements OnInit {
   id: string | undefined;
   recipe: Recipe | undefined;
 
-  constructor(private route: ActivatedRoute, private spoonacularService: SpoonacularService) { }
+  constructor(
+    private route: ActivatedRoute, 
+    private spoonacularService: SpoonacularService
+  ) { }
 
   ngOnInit() {
     this.route.params.subscribe(params => {
