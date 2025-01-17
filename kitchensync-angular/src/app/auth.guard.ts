@@ -22,6 +22,9 @@ export const authGuard: CanActivateFn = async (route, state) => {
         sessionStorage.setItem('id', data.user.id);
         sessionStorage.setItem('first_name', data.user.first_name);
         sessionStorage.setItem('last_name', data.user.last_name);
+        sessionStorage.setItem('email', data.user.email);
+        sessionStorage.setItem('user_type_id', data.user.user_type_id);
+        sessionStorage.setItem('family_id', data.user.family_id);
         return true;
       }
     } catch (error) {
@@ -37,3 +40,4 @@ export const authGuard: CanActivateFn = async (route, state) => {
   // router.navigate(['/login']);
   return false;
 };
+
