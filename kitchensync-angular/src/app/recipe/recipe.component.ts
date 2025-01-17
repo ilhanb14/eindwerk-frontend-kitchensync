@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { Recipe } from '../shared/recipe';
+import { Recipe } from '../interfaces/recipe';
 import { SpoonacularService } from '../shared/spoonacular.service';
 import { SafeHtmlPipe } from '../pipes/safe-html.pipe';
 
