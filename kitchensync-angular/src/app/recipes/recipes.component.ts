@@ -4,15 +4,16 @@ import { FormsModule } from '@angular/forms';
 import { SmallRecipesResponse } from '../shared/small-recipe';
 import { Recipe } from '../shared/recipe';
 import { Router, RouterLink } from '@angular/router';
+import { SafeHtmlPipe } from '../pipes/safe-html.pipe';
 
 @Component({
   selector: 'app-recipes',
-  imports: [FormsModule, RouterLink],
+  imports: [FormsModule, RouterLink, SafeHtmlPipe],
   templateUrl: './recipes.component.html',
   styleUrl: './recipes.component.css'
 })
 
-export class RecipesComponent{
+export class RecipesComponent {
   smallRecipes: SmallRecipesResponse = { results: [] } // Holds the fetched recipes
   loading = false; // Tracks loading state
   error: string | null = null; // Holds error message
@@ -20,9 +21,12 @@ export class RecipesComponent{
   selectedMeal = signal<Recipe | null>(null); // Selected recipe
   expandedMeal: number | null = null; // Track currently expanded recipe
 
-  constructor(private spoonacularService: SpoonacularService) {
+  constructor(
+    private spoonacularService: SpoonacularService,
+    private router: Router
+  ) {
     this.fetchRecipes();
-   }
+  }
 
   async fetchRecipes() {
     this.loading = true; // Show loading message
