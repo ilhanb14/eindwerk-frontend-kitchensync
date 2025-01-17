@@ -9,7 +9,12 @@ export class RequestsService {
   constructor() { }
 
   async getByFamily(familyId: number) {
-
+    try {
+      const response = await fetch(this.url + "requests/" + familyId);
+      return await response.json();
+    } catch (error) {
+      console.error("Error fetching requests:", error);
+    }
   }
 
   // Make a request for a specific meal, mealtime and comment optional
@@ -33,6 +38,6 @@ export class RequestsService {
   }
 
   async delete(id: number) {
-    
+
   }
 }
