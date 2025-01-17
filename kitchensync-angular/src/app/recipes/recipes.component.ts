@@ -1,8 +1,8 @@
 import { Component, signal } from '@angular/core';
 import { SpoonacularService } from '../shared/spoonacular.service';
 import { FormsModule } from '@angular/forms';
-import { SmallRecipesResponse } from '../shared/small-recipe';
-import { Recipe } from '../shared/recipe';
+import { SmallRecipesResponse } from '../interfaces/small-recipe';
+import { Recipe } from '../interfaces/recipe';
 import { Router, RouterLink } from '@angular/router';
 import { SafeHtmlPipe } from '../pipes/safe-html.pipe';
 
