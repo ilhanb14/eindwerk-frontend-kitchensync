@@ -43,22 +43,22 @@ export class PreferencesComponent {
   }
 
   async saveChanges() {
-    // TODO: read all choices and update db
     for (const preference of this.preferenceList) {
       let prefCheckbox = document.getElementById('check-'+preference.id)! as HTMLInputElement; // checkbox for this preference
       let importantCheckbox = document.getElementById('important-'+preference.id)! as HTMLInputElement; // checkbox that marks this preference as important
       let savedUserPreference = this.userPreferences.find(userPref => userPref.id === preference.id)
 
+
       if (prefCheckbox.checked && !savedUserPreference) {  // if checked and not already saved
-        this.preferencesService.addUserPreference(this.userId, preference.id, importantCheckbox.checked);  // TODO: user id based on currently logged in user
+        await this.preferencesService.addUserPreference(this.userId, preference.id, importantCheckbox.checked);
       } else if (prefCheckbox.checked && savedUserPreference.pivot.important != importantCheckbox.checked) {  // if checked, already saved, important changed
-        this.preferencesService.toggleImportant(this.userId, preference.id); // TODO: user id based on currently logged in user
+        await this.preferencesService.toggleImportant(this.userId, preference.id);
       } else if (!prefCheckbox.checked && savedUserPreference) {  // if unchecked, but is saved
-        this.preferencesService.deleteUserPreference(this.userId, preference.id);  // TODO: user id based on currently logged in user
+        await this.preferencesService.deleteUserPreference(this.userId, preference.id);
       }
     }
 
-    this.userPreferences = await this.preferencesService.getAllUserPreferences(this.userId);  // TODO: user id based on currently logged in user
+    this.userPreferences = await this.preferencesService.getAllUserPreferences(this.userId);
   }
 
   preferenceToggled(preferenceId: number) {
