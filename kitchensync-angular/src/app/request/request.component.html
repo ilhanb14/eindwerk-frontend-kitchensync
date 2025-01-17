@@ -1,1 +1,15 @@
-<p>request works!</p>
+<div id="existing-requests">
+    <h3>Requests</h3>
+    <ul>
+        @for (request of existingRequests; track $index) {
+            <li>
+            @for (user of userNames; track $index) {
+                @if (user.id == request.user_id) {
+                    Request by {{ user.fullName }}
+                }
+            }
+            {{request.meal_id || "x"}}, {{request.mealtime_id || "x"}}, {{request.comment || "x"}}, {{request.cuisine || "x"}}
+            </li>
+        }
+    </ul>
+</div>
