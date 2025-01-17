@@ -3,7 +3,7 @@ export interface Recipe {
     title: string; // Title of the recipe
     image: string; // URL of the recipe image
     imageType: string; // Type of the recipe image
-    summary?: string; // Brief summary of the recipe (optional)
+    summary: string; // Brief summary of the recipe (optional)
     cookingMinutes: number; // Cooking time in minutes
     readyInMinutes: number; // Preparation time in minutes
     servings: number; // Number of servings
