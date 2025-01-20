@@ -14,6 +14,8 @@ import { SafeHtmlPipe } from '../pipes/safe-html.pipe';
 export class RecipeComponent implements OnInit {
   id: string | undefined;
   recipe: Recipe | undefined;
+  userId: number = Number(sessionStorage.getItem('id'));
+  familyId: number = Number(sessionStorage.getItem('family_id'));
 
   constructor(
     private route: ActivatedRoute, 
