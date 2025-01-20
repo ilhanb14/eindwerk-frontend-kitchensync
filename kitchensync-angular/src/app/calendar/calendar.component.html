@@ -1,4 +1,24 @@
+<div class="layout">
+  <!-- Calendar Section -->
+  <div class="calendar">
+    <full-calendar [options]="calendarOptions"></full-calendar>
+  </div>
 
-<full-calendar 
-[options]="calendarOptions"
-></full-calendar>
+  <!-- Recipes Section -->
+  <div class="recipes" #recipeContainer>
+    <h3>Recipes</h3>
+    <div class="search">
+      <input #query type="text" placeholder="Search for recipes" />
+      <button (click)="searchRecipes(query.value)">Search</button>
+    </div>
+    <div
+      *ngFor="let recipe of recipes"
+      class="recipe"
+      [attr.data-recipe]="stringify(recipe)">  <!-- Add this line -->
+      {{ recipe.title }}
+      <img [src]="recipe.image" alt="{{ recipe.title }}" />
+      <p>{{ recipe.title }}</p>
+    </div>
+  </div>
+</div>
+
