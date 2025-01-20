@@ -29,7 +29,7 @@
                       @if (selectedMeal(); as meal) {
                         <p><strong>Summary:</strong></p>
                         <div [innerHTML]="meal.summary | safeHtml"></div>
-                        <a [routerLink]="['/recipe', recipe.id]" target="_blank">View Recipe</a>
+                        <a [routerLink]="['/recipe', recipe.id]">View Recipe</a>
                       } @else {
                         <p>Loading recipe details...</p>                      
                       }
