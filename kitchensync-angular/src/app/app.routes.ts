@@ -1,7 +1,6 @@
 import { Routes } from '@angular/router';
 import { HomeComponent } from './home/home.component';
 import { CalendarComponent } from './calendar/calendar.component';
-import { CalendarComponent } from './calendar/calendar.component';
 import { RecipesComponent } from './recipes/recipes.component';
 import { RecipeComponent } from './recipe/recipe.component';
 import { UserComponent } from './user/user.component';
