@@ -38,7 +38,7 @@ export class RecipeComponent implements OnInit {
 
   // Like this recipe
   like() {
-
+    this.likedMealsService.likeMeal(Number(this.id!), this.userId)
   }
 
   // Show form for making a request with this meal
