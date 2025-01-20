@@ -1,5 +1,31 @@
+<div id="input-request">
+    <h3>Make a request</h3>
+    Date:
+    <input type="date" id="date" [disabled]="!includeDate"><br>
+    Include date?
+    <input type="checkbox" id="include-date" [(ngModel)]="includeDate"><br>
+    Mealtime:
+    <select id="mealtime-option">
+        <option value="none">None</option>
+        @for (mealtime of mealtimes; track $index) {
+            <option [value]="mealtime.id">{{mealtime.mealtime}}</option>
+        }
+    </select><br>
+    Comment:
+    <textarea id="comment"></textarea><br>
+    Cuisine:
+    <select id="cuisine-option">
+        <option value="none">None</option>
+        @for(cuisine of cuisines; track $index) {
+            <option [value]="cuisine">{{cuisine}}</option>
+        }
+    </select><br>
+    <button (click)="makeRequest()">Make request</button><br>
+    Want to request a specific recipe? <a routerLink="/recipes">Find some here!</a>
+</div>
 <div id="existing-requests">
     <h3>Requests</h3>
+    <button (click)="fetchExistingRequests()">Refresh</button>
     <ul>
         @for (request of existingRequests; track $index) {
             <li>
@@ -7,8 +33,38 @@
                 @if (user.id == request.user_id) {
                     Request by {{ user.fullName }}
                 }
+            } <br>
+            @if(request.meal_id) {
+                <!-- TOOD Fetch meal data from spoonacular -->
+                {{request.meal_id}}<br>
+                <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/3f/Placeholder_view_vector.svg/1280px-Placeholder_view_vector.svg.png" width="150px"> <br>
             }
-            {{request.meal_id || "x"}}, {{request.mealtime_id || "x"}}, {{request.comment || "x"}}, {{request.cuisine || "x"}}
+
+            Date:
+            @if (request.date) {
+                {{request.date}}
+            } @else {
+                No specific date
+            }<br>
+
+            Mealtime:
+            @if(request.mealtime) {
+                {{request.mealtime.toUpperCase()[0] + request.mealtime.substr(1).toLowerCase()}}
+            } @else {
+                No specific mealtime
+            }<br>
+
+            Comment:
+            @if(request.comment && request.comment != "") {
+                {{request.comment}}
+            } @else {
+                No comment
+            }<br>
+
+            @if (request.cuisine) {
+                Cuisine: {{request.cuisine}}
+            }<br>
+
             </li>
         }
     </ul>
