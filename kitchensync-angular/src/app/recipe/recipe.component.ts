@@ -3,6 +3,8 @@ import { ActivatedRoute } from '@angular/router';
 import { Recipe } from '../interfaces/recipe';
 import { SpoonacularService } from '../shared/spoonacular.service';
 import { SafeHtmlPipe } from '../pipes/safe-html.pipe';
+import { LikedMealsService } from '../shared/likedmeals.service';
+import { RequestsService } from '../shared/requests.service';
 
 @Component({
   selector: 'app-recipe',
@@ -19,7 +21,9 @@ export class RecipeComponent implements OnInit {
 
   constructor(
     private route: ActivatedRoute, 
-    private spoonacularService: SpoonacularService
+    private spoonacularService: SpoonacularService,
+    private likedMealsService: LikedMealsService,
+    private requestsService: RequestsService
   ) { }
 
   ngOnInit() {
@@ -30,5 +34,20 @@ export class RecipeComponent implements OnInit {
         console.log(this.recipe);
       });
     })
+  }
+
+  // Like this recipe
+  like() {
+
+  }
+
+  // Show form for making a request with this meal
+  showRequestForm() {
+
+  }
+
+  // Submit request with this meal and form options
+  request() {
+
   }
 }
