@@ -1,13 +1,16 @@
-import { Component, signal } from '@angular/core';
+import { Component, AfterViewInit, ElementRef, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FullCalendarModule } from '@fullcalendar/angular';
-import { CalendarOptions, DateSelectArg, EventClickArg, EventApi } from '@fullcalendar/core';
+import {
+  CalendarOptions,
+  DateSelectArg,
+  EventClickArg,
+  EventApi,
+} from '@fullcalendar/core';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import timeGridPlugin from '@fullcalendar/timegrid';
-import interactionPlugin from '@fullcalendar/interaction';
-import listPlugin from '@fullcalendar/list';
+import interactionPlugin, { Draggable } from '@fullcalendar/interaction';
 import { SpoonacularService } from '../shared/spoonacular.service';
-import { FormsModule } from '@angular/forms';
 
 interface SpoonacularRecipe {
   id: number;
@@ -20,13 +23,16 @@ interface SpoonacularRecipe {
 @Component({
   selector: 'app-calendar',
   standalone: true,
-  imports: [CommonModule, FullCalendarModule, FormsModule],
+  imports: [CommonModule, FullCalendarModule],
   templateUrl: './calendar.component.html',
   styleUrls: ['./calendar.component.css'],
 })
-export class CalendarComponent {
+export class CalendarComponent implements AfterViewInit {
+  @ViewChild('recipeContainer', { static: false }) recipeContainer!: ElementRef;
+
   recipes: SpoonacularRecipe[] = [];
-  searchQuery: string = '';
+  currentEvents: EventApi[] = [];
+
   calendarOptions: CalendarOptions = {
     initialView: 'dayGridMonth',
     headerToolbar: {
@@ -34,18 +40,37 @@ export class CalendarComponent {
       center: 'title',
       right: 'dayGridMonth,timeGridWeek,timeGridDay',
     },
-    plugins: [dayGridPlugin, timeGridPlugin, interactionPlugin, listPlugin],
-    selectable: true,
     editable: true,
-    droppable: true,
-    select: this.handleDateSelect.bind(this),
+    droppable: true, // Accept external draggables
     eventClick: this.handleEventClick.bind(this),
-    drop: this.handleDrop.bind(this),
+    eventsSet: this.handleEvents.bind(this),
+    plugins: [dayGridPlugin, timeGridPlugin, interactionPlugin],
   };
 
-  currentEvents = signal<EventApi[]>([]);
-
   constructor(private spoonacularService: SpoonacularService) {}
+
+  ngAfterViewInit() {
+    // Initialize Draggable for recipe items
+    new Draggable(this.recipeContainer.nativeElement, {
+      itemSelector: '.recipe', // CSS class for draggable items
+      eventData: function (el) {
+        const recipeData = el.getAttribute('data-recipe');
+        if (recipeData) {
+          const recipe: SpoonacularRecipe = JSON.parse(recipeData);
+          return {
+            title: recipe.title, // Event title
+            extendedProps: {
+              recipeId: recipe.id,
+              image: recipe.image,
+              readyInMinutes: recipe.readyInMinutes,
+              servings: recipe.servings,
+            },
+          };
+        }
+        return {};
+      },
+    });
+  }
 
   async searchRecipes(query: string) {
     if (!query.trim()) return;
@@ -69,55 +94,13 @@ export class CalendarComponent {
     }
   }
 
-  onDragStart(event: DragEvent, recipe: SpoonacularRecipe) {
-    if (event.dataTransfer) {
-      event.dataTransfer.setData('recipe', JSON.stringify(recipe));
-    }
-  }
-
-  handleDrop(dropInfo: any) {
-    const recipeData = dropInfo.draggedEl.getAttribute('data-recipe');
-    if (!recipeData) return;
-
-    const recipe: SpoonacularRecipe = JSON.parse(recipeData);
-    dropInfo.view.calendar.addEvent({
-      id: this.createEventId(),
-      title: recipe.title,
-      start: dropInfo.date,
-      allDay: true,
-      extendedProps: {
-        recipeId: recipe.id,
-        image: recipe.image,
-        readyInMinutes: recipe.readyInMinutes,
-        servings: recipe.servings,
-      },
-    });
-  }
-
-  handleDateSelect(selectInfo: DateSelectArg) {
-    const title = prompt('Please enter a new title for your event');
-    const calendarApi = selectInfo.view.calendar;
-
-    calendarApi.unselect();
-
-    if (title) {
-      calendarApi.addEvent({
-        id: this.createEventId(),
-        title,
-        start: selectInfo.startStr,
-        end: selectInfo.endStr,
-        allDay: selectInfo.allDay,
-      });
-    }
-  }
-
   handleEventClick(clickInfo: EventClickArg) {
     if (confirm(`Are you sure you want to delete the event '${clickInfo.event.title}'?`)) {
       clickInfo.event.remove();
     }
   }
 
-  private createEventId(): string {
-    return Math.random().toString(36).substring(2) + Date.now().toString(36);
+  handleEvents(events: EventApi[]) {
+    this.currentEvents = events;
   }
 }

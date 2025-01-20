@@ -5,22 +5,16 @@
   </div>
 
   <!-- Recipes Section -->
-  <div class="recipes">
-    <h3>Available Recipes</h3>
-    <div class="search-bar">
-      <input
-        type="text"
-        [(ngModel)]="searchQuery"
-        placeholder="Search recipes..."
-        class="search-input"
-      />
-      <button (click)="searchRecipes(searchQuery)">Search</button>
+  <div class="recipes" #recipeContainer>
+    <h3>Recipes</h3>
+    <div class="search">
+      <input #query type="text" placeholder="Search for recipes" />
+      <button (click)="searchRecipes(query.value)">Search</button>
     </div>
     <div
       *ngFor="let recipe of recipes"
       class="recipe"
-      draggable="true"
-      (dragstart)="onDragStart($event, recipe)"
+    
     >
       <img [src]="recipe.image" alt="{{ recipe.title }}" />
       <p>{{ recipe.title }}</p>
