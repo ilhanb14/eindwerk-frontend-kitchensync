@@ -43,6 +43,7 @@ export class LoginService {
     });
   }
 
+
   register(email: string, password: string, first_name: string, last_name: string) {
     return fetch(`${this.url}/register`, {
       method: 'POST',

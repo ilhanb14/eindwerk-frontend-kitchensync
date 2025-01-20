@@ -2,9 +2,15 @@ import { Component } from '@angular/core';
 import { LoginService } from '../shared/login.service';
 import { Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
+import { LoginService } from '../shared/login.service';
+import { Router } from '@angular/router';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-login',
+  standalone: true,
+  imports: [FormsModule],
+  providers: [LoginService],
   standalone: true,
   imports: [FormsModule],
   providers: [LoginService],
