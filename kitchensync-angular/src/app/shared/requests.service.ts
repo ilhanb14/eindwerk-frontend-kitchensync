@@ -38,6 +38,12 @@ export class RequestsService {
   }
 
   async delete(id: number) {
-
+    try {
+      fetch(this.url + "requests/" + id, {
+        method: 'DELETE'
+      });
+    } catch (error) {
+      console.error("Error deleting request:", error);
+    }
   }
 }
