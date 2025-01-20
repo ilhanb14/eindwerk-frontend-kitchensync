@@ -43,13 +43,13 @@ export class LoginService {
     });
   }
 
-  register(email: string, password: string, first_name: string, last_name: string, family_id: number, user_type_id: number) {
+  register(email: string, password: string, first_name: string, last_name: string) {
     return fetch(`${this.url}/register`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify({ email, password, first_name, last_name, family_id, user_type_id })
+      body: JSON.stringify({ email, password, first_name, last_name})
     });
   }
 
