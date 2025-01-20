@@ -1,18 +1,148 @@
+<head>
+      <!-- Fontawesome CDN Link -->
+      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+</head>
 <div class="login">
-  <div class="container">
-    <h2>Login to your account</h2>
-    
-      <label for="email">Email: </label>
-      <input class= "form-control" type="text" [(ngModel)]="emailInput" placeholder="Enter your email">
-  
-      <label for="password">Password: </label>
-      <input class = "form-control" type="password" [(ngModel)]="passwordInput" placeholder="Enter your password">
-  
-      <button (click)="onSubmit()" type="submit">Login</button>
-      <button (click)="logout()" type="submit">Logout</button>
-
+<div class="container">
+  <input type="checkbox" id="flip">
+  <div class="cover">
+    <div class="front">
+      <img src="/KitchenSyncLogo.png" alt="Logo">
+      <!-- <div class="text">
+        <span class="text-1">Every new friend is a <br> new adventure</span>
+        <span class="text-2">Let's get connected</span>
+      </div> -->
+    </div>
+    <div class="back">
+      <img class="backImg" src="/KitchenSyncLogo.png" alt="Logo">
+      <!-- <div class="text">
+        <span class="text-1">Complete miles of journey <br> with one step</span>
+        <span class="text-2">Let's get started</span>
+      </div> -->
+    </div>
   </div>
-    
-  <p>Don't have an account? <a routerLink="/register">Register</a></p>
+  <div class="forms">
+    <div class="form-content">
 
+      <!-- Login form -->
+      <div class="login-form">
+        <div class="title">Login</div>
+        <form action="#">
+          <div class="input-boxes">
+
+            <!-- Email -->
+            <div class="input-box">
+              <i class="fas fa-envelope"></i>
+              <input type="text" placeholder="Enter your email" [(ngModel)]="emailLogin" name="emailLogin" #emailLog="ngModel" required email>
+            </div>
+            <p class="error-message">
+              @if (emailLog.touched && emailLog.invalid) {
+                @if (emailLog.errors?.['required']) {Email is required.}
+                @if (emailLog.errors?.['email']) {Please enter a valid email address.}
+              }
+            </p>
+
+            <!-- password -->
+            <div class="input-box">
+              <i class="fas fa-lock"></i>
+              <input [type]="showPassword['passwordLogin'] ? 'text' : 'password'" placeholder="Enter your password" [(ngModel)]="passwordLogin" name="passwordLogin" #passwordLog="ngModel" required minlength="8">
+              <i class="fa-solid" [class.fa-eye-slash]='!showPassword["passwordLogin"]' [class.fa-eye]='showPassword["passwordLogin"]' (click)="togglePassword('passwordLogin')"></i>
+            </div>
+            <p class="error-message">
+              @if (passwordLog.touched && passwordLog.invalid) {
+                @if (passwordLog.errors?.['required']) {Password is required.}
+                @if (passwordLog.errors?.['minlength']) {Password must be at least 8 characters long.}
+              }
+            </p>
+
+            <!-- <div class="text"><a href="#">Forgot password?</a></div> -->
+            <div class="button input-box">
+              <input type="submit" value="Login" (click)="login()">
+            </div>
+            <p class="error-message">
+              @if (loginMessage) { {{ loginMessage}} }
+            </p>
+            <div class="text sign-up-text">Don't have an account? <label for="flip">Signup now</label></div>
+          </div>
+        </form>
+      </div>
+      
+      <!-- Signup form -->
+      <div class="signup-form">
+        <div class="title">Signup</div>
+        <form action="#">
+          <div class="input-boxes">
+
+            <!-- Name -->
+            <div class="names">
+              <!-- First name -->
+              <div class="input-box name">
+                <i class="fas fa-user"></i>
+                <input type="text" placeholder="First name" [(ngModel)]="firstNameSignup" name="firstName" #firstName="ngModel" required>
+              </div>
+
+              <!-- Last name -->
+              <div class="input-box name">
+                <i class="fas fa-user"></i>
+                <input type="text" placeholder="Last name" [(ngModel)]="lastNameSignup" name="lastName" #lastName="ngModel" required>
+              </div>
+            </div>
+            <p class="error-message">
+              @if (firstName.touched && firstName.invalid || lastName.touched && lastName.invalid) {
+                @if (firstName.errors?.['required']) {First name is required.}
+                @else {Last name is required.}
+              }
+            </p>
+
+            <!-- Email -->
+            <div class="input-box">
+              <i class="fas fa-envelope"></i>
+              <input type="text" placeholder="Enter your email" [(ngModel)]="emailSignup" name="emailSignup" #emailSign="ngModel" required email>
+            </div>
+            <p class="error-message">
+              @if (emailSign.touched && emailSign.invalid) {
+                @if (emailSign.errors?.['required']) {Email is required.}
+                @if (emailSign.errors?.['email']) {Please enter a valid email address.}
+              }
+            </p>
+
+            <!-- Password -->
+            <div class="input-box">
+              <i class="fas fa-lock"></i>
+              <input [type]='showPassword["passwordSignup"] ? "text" : "password"' placeholder="Enter your password" [(ngModel)]="passwordSignup" name="passwordSign" #passwordSign="ngModel" required minlength="8">
+              <i class="fa-solid" [class.fa-eye-slash]='!showPassword["passwordSignup"]' [class.fa-eye]='showPassword["passwordSignup"]' (click)="togglePassword('passwordSignup')"></i>
+            </div>
+            <p class="error-message">
+              @if (passwordSign.touched && passwordSign.invalid) {
+                @if (passwordSign.errors?.['required']) {Password is required.}
+                @if (passwordSign.errors?.['minlength']) {Password must be at least 8 characters long.}
+              }
+            </p>
+
+            <!-- Password verify -->
+            <div class="input-box">
+              <i class="fas fa-lock"></i>
+              <input [type]='showPassword["passwordSignupVerify"] ? "text" : "password"' placeholder="Verify your password" [(ngModel)]="passwordSignupVerify" name="passwordVerify" #passwordVerify="ngModel" required minlength="8">
+              <i class="fa-solid" [class.fa-eye-slash]='!showPassword["passwordSignupVerify"]' [class.fa-eye]='showPassword["passwordSignupVerify"]' (click)="togglePassword('passwordSignupVerify')"></i>
+            </div>
+            <p class="error-message">
+              @if (passwordVerify.touched && passwordVerify.invalid) {
+                @if (passwordVerify.errors?.['required']) {Password is required.}
+                @if (passwordVerify.errors?.['minlength']) {Password must be at least 8 characters long.}
+              }
+            </p>
+
+            <div class="button input-box">
+              <input type="submit" value="Register" (click)="signup()">
+            </div>
+            <p class="error-message">
+              @if (signupMessage) { {{signupMessage}} }
+            </p>
+            <div class="text sign-up-text">Already have an account? <label for="flip">Login now</label></div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
 </div>
