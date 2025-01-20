@@ -17,19 +17,19 @@ export class RequestsService {
     }
   }
 
-  // Make a request for a specific meal, mealtime and comment optional
-  async requestWithMeal(date: Date, familyId: number, userId: number, mealId: number, comment: string = "", mealtimeId = undefined) {
-
-  }
-
-  // Make a request for a specific cuisine, mealtime and comment optional
-  async requestWithCuisine(date: Date, familyId: number, userId: number, cuisine: string, comment: string = "", mealtimeId = undefined) {
-
-  }
-
-  // Make a request with comment only, mealtime optional
-  async requestWithComment(date: Date, familyId: number, userId: number, comment: string, mealtimeId = undefined) {
-
+  // Make a request for a request, date and mealtime are optional, must include at least one of meal_id, cuisine, or comment
+  async makeRequest(request: any) {
+    try {
+      fetch(this.url + "requests/", {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(request)
+      })
+    } catch (error) {
+      console.error("Error making request:", error);
+    }
   }
 
   // Update an existing request
