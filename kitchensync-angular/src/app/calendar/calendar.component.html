@@ -14,8 +14,8 @@
     <div
       *ngFor="let recipe of recipes"
       class="recipe"
-    
-    >
+      [attr.data-recipe]="stringify(recipe)">  <!-- Add this line -->
+      {{ recipe.title }}
       <img [src]="recipe.image" alt="{{ recipe.title }}" />
       <p>{{ recipe.title }}</p>
     </div>

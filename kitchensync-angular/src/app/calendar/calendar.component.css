@@ -9,17 +9,17 @@
   
   /* Calendar Section */
   .calendar {
-    flex: 2; /* Shrinks the calendar to 2/3rd of the available space */
+    flex: 2; 
     border: 1px solid #ccc;
     border-radius: 8px;
     padding: 10px;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-    max-width: 70%; /* Calendar is 70% of the layout */
+    max-width: 70%;
   }
   
   .full-calendar {
     width: 100%;
-    height: calc(70vh - 40px); /* Adjusts height */
+    height: calc(70vh - 40px);
   }
 .recipes {
     flex: 1;
