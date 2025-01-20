@@ -95,4 +95,12 @@ export class RequestComponent {
     this.requestsService.makeRequest(newRequest);
     alert("Request made!")
   }
+
+  deleteRequest(id: number) {
+    const request = this.existingRequests.find(request => request.id == id);
+    if (this.userTypeId == 1 || this.userId == request.user_id) {
+      this.requestsService.delete(id);
+      this.existingRequests = this.existingRequests.filter(otherRequest => otherRequest.id != request.id);  // Update local array
+    }
+  }
 }

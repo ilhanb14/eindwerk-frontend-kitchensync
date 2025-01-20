@@ -62,8 +62,12 @@
             }<br>
 
             @if (request.cuisine) {
-                Cuisine: {{request.cuisine}}
-            }<br>
+                Cuisine: {{request.cuisine}}<br>
+            }
+
+            @if (userTypeId == 1 || request.user_id == userId) { <!-- Delete button only shown for own requests, all if user is adult -->
+                <button (click)="deleteRequest(request.id)">Delete</button>
+            }
 
             </li>
         }
