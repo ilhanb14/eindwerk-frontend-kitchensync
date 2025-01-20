@@ -11,6 +11,7 @@ import dayGridPlugin from '@fullcalendar/daygrid';
 import timeGridPlugin from '@fullcalendar/timegrid';
 import interactionPlugin, { Draggable } from '@fullcalendar/interaction';
 import { SpoonacularService } from '../shared/spoonacular.service';
+import { Title } from '@angular/platform-browser';
 
 interface SpoonacularRecipe {
   id: number;
@@ -44,6 +45,7 @@ export class CalendarComponent implements AfterViewInit {
     droppable: true, // Accept external draggables
     eventClick: this.handleEventClick.bind(this),
     eventsSet: this.handleEvents.bind(this),
+    eventReceive: this.handleEventRecieve.bind(this),
     plugins: [dayGridPlugin, timeGridPlugin, interactionPlugin],
   };
 
@@ -100,6 +102,23 @@ export class CalendarComponent implements AfterViewInit {
     }
   }
 
+  handleEventRecieve(info: any) {
+    const droppedEvent = info.event;
+    const title = droppedEvent.title;
+    console.log('dropped event data:',{
+      event: droppedEvent,
+      Title: droppedEvent.title,
+      extendedProps: droppedEvent.extendedProps,
+    });
+    if (droppedEvent.extendedProps?.recipeId) {
+      droppedEvent.setProp('title', droppedEvent.title);
+    }else{
+      console.error('no data found for dropped event');
+    }
+  }
+  stringify(recipe: SpoonacularRecipe): string {
+    return JSON.stringify(recipe);
+  }
   handleEvents(events: EventApi[]) {
     this.currentEvents = events;
   }
