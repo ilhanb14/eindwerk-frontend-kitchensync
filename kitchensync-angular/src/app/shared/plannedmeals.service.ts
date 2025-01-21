@@ -16,4 +16,13 @@ export class PlannedMealsService {
       console.error("Error getting planned meals by family:", error);
     }
   }
+
+  async getByFamilyAndDate(familyId: number, date: Date) {
+    try {
+      const response = await fetch(this.url + "plannedmeals/" + familyId + "/" + date.toISOString().split('T')[0]);
+      return await response.json();
+    } catch (error) {
+      console.error("Error getting planned meals by family:", error);
+    }
+  }
 }
