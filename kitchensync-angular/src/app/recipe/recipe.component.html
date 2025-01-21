@@ -40,6 +40,21 @@
       
     </div>
 
+    <button id="like-button" (click)="like()">Like</button>
+    <button id="request-button" (click)="showRequestForm()">Request</button>
+
+    <div id="request-form" style="display:none">
+      Date:<input type="date" id="date" [disabled]="!includeDate"><br>
+      Include date? <input type="checkbox" [(ngModel)]="includeDate"><br>
+      Mealtime: <select id="mealtime-option">
+        <option value="none">None</option>
+        @for (mealtime of mealtimes; track $index) {
+          <option [value]="mealtime.id">{{ mealtime.mealtime }}</option>
+        }
+      </select><br>
+      Comment: <textarea id="comment"></textarea><br>
+      <button (click)="request()">Make request</button>
+    </div>
 }
   
   <!-- Optional: Show loading state -->

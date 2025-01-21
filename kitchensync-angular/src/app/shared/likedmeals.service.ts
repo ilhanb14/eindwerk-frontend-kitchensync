@@ -18,17 +18,21 @@ export class LikedMealsService {
   }
 
   async likeMeal(mealId: number, userId: number) {
+
     try {
-      await fetch(this.url + "likedmeals", {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          meal_id: mealId,
-          user_id: userId
-        })
-      });
+      const likedMeals = await this.getByUser(userId);
+      if (likedMeals.some((row: any) => row.meal_id)) {
+        await fetch(this.url + "likedmeals", {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            meal_id: mealId,
+            user_id: userId
+          })
+        });
+      }
     } catch (error) {
       console.error("Error liking meal:", error);
     }
