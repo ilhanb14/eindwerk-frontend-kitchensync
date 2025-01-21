@@ -30,7 +30,15 @@ export class RecipeComponent implements OnInit {
     private requestsService: RequestsService,
     private mealtimesService: MealtimesService
   ) { 
-    mealtimesService.getAll().then(response => this.mealtimes = response);
+    this.mealtimesService.getAll().then(response => this.mealtimes = response);
+
+    this.likedMealsService.getByUser(this.userId).then(likedMeals => {
+      if (likedMeals.some((row: any) => row.meal_id == this.id)) {  // If this meal is already liked
+        document.getElementById('like-button')!.style.display = "none"; // Hide like button and replace with unlike button
+        document.getElementById('unlike-button')!.style.display = "inline-block";
+        console.log("Found meal initially liked");
+      }
+    })
   }
 
   ngOnInit() {
@@ -45,7 +53,17 @@ export class RecipeComponent implements OnInit {
 
   // Like this recipe
   like() {
+    console.log("Like clicked");
     this.likedMealsService.likeMeal(Number(this.id!), this.userId)
+    document.getElementById('like-button')!.style.display = "none"; // Hide like button and replace with unlike button
+    document.getElementById('unlike-button')!.style.display = "inline-block";
+  }
+
+  unlike() {
+    console.log("Unlike clicked");
+    this.likedMealsService.deleteLikedMealByData(Number(this.id), this.userId);
+    document.getElementById('unlike-button')!.style.display = "none"; // Hide unlike button and replace with like button
+    document.getElementById('like-button')!.style.display = "inline-block";
   }
 
   // Show form for making a request with this meal

@@ -18,10 +18,9 @@ export class LikedMealsService {
   }
 
   async likeMeal(mealId: number, userId: number) {
-
     try {
       const likedMeals = await this.getByUser(userId);
-      if (likedMeals.some((row: any) => row.meal_id)) {
+      if (!likedMeals.some((row: any) => row.meal_id == mealId)) {
         await fetch(this.url + "likedmeals", {
           method: 'POST',
           headers: {
