@@ -1,12 +1,18 @@
 <div id="user-data">
     <h3>Personal Info</h3>
-    Name: {{firstName}} {{lastName}} <br>
-    Email: {{email}} <br>
-    Family: {{familyName}} <br>
-    User Type:
-    @if (userType.length > 0) { <!-- Trying to get the first char of an empty string will cause errors -->
-        {{userType[0].toUpperCase() + userType.substr(1).toLowerCase()}}
-    }
+    <div>
+        <p>Name: {{firstName}} {{lastName}}</p>
+        <p>Email: {{email}} </p>
+        <p><a href="/family">Family</a>:
+            @if (familyName) { 
+                {{familyName}}
+            } @else {<a href="/family">Voeg familie toe</a>} </p>
+        <p>User Type:
+            @if (userType) { <!-- Trying to get the first char of an empty string will cause errors -->
+                {{userType[0].toUpperCase() + userType.substr(1).toLowerCase()}}
+            }
+        </p>
+    </div>
     <h3>Family Members</h3>
     <ul id="family">
         @for (familyMember of family; track $index) {
