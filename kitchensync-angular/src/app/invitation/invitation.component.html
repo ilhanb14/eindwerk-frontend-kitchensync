@@ -1,0 +1,55 @@
+<head>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/0.6.1/components.css">
+</head>
+
+<div className="max-w-3xl mx-auto p-6">
+    <h2 className="text-2xl font-bold mb-6">Family Invitations</h2>
+    
+    @if (invitations.length === 0) {
+      <div className="text-gray-500 text-center p-8 bg-gray-50 rounded-lg">
+        No pending invitations
+      </div>
+    } @else {
+      <ul className="space-y-4">
+        @for (invitation of invitations; track $index) {     
+          <li 
+            key={index} 
+            className="bg-white rounded-lg shadow-sm border border-gray-200 p-4 hover:shadow-md transition-shadow"
+          >
+            <div className="flex justify-between items-center">
+              <div className="space-y-1">
+                <div className="font-medium">
+                  <span className="text-gray-600">Invited by:</span> {{invitation.inviter.first_name}} {{invitation.inviter.last_name}}
+                </div>
+                <div>
+                  <span className="text-gray-600">Family:</span> {{invitation.family.name}}
+                </div>
+                <div className="text-sm text-gray-500">
+                  Status: {{invitation.status.status}}
+                </div>
+              </div>
+              
+              <div className="flex gap-2">
+                <button
+                  (click)="handleAccept(invitation.id)"
+                  
+                  className="flex items-center gap-1 px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                >
+                 
+                  Accept
+                </button>
+                <button
+                  (click)="handleRefuse(invitation.id)"
+                  
+                  className="flex items-center gap-1 px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                >
+                  
+                  Refuse
+                </button>
+              </div>
+            </div>
+          </li>
+        }
+      </ul>
+    }
+  </div>
