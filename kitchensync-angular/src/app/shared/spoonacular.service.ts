@@ -59,4 +59,30 @@ export class SpoonacularService {
       throw error;
     } 
   }
+
+  async getMealsById(ids: number[]) {
+    try {
+      let idsString: string = ""
+      for (let id of ids) { // Add all ids seperated by commas
+        idsString += id + ",";
+      }
+      idsString = idsString.substring(0, idsString.length - 1); // Cut off last comma
+      
+      const response = await fetch(`${this.apiUrl}/recipes/informationBulk?ids=${idsString}`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-api-key': this.apiKey
+        }
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      return await response.json();
+    } catch (error) {
+      console.error("Error fetching spoonacular informationBulk:", error);
+    }
+  }
 }
