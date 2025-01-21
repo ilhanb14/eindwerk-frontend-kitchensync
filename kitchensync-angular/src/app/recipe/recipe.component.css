@@ -1,0 +1,13 @@
+#request-form {
+    position: fixed;
+    top: 40%;
+    left: 35%;
+
+    padding: 20px;
+    min-width: 300px;
+    width: 30%;
+    
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0px 2px 20px 0px rgba(0, 0, 0, 0.75);
+}
