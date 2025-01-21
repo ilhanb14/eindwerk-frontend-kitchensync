@@ -14,8 +14,8 @@ import { LikedMealsComponent } from "../likedmeals/likedmeals.component";
 export class UserComponent {
   firstName: string = "";
   lastName: string = "";
-  familyName: string = "";
-  userType: string = "";
+  familyName: string | null = null;
+  userType: string | null= null;
   email: string = "";
   family: any[] = [];
   private userId: number = Number(sessionStorage.getItem('id'))
@@ -27,13 +27,17 @@ export class UserComponent {
   async fetchUserData() {
     const userData = await this.usersService.getOne(this.userId);
 
-    this.fetchFamily(userData.family_id);
+    if (userData.family_id) {
+      this.fetchFamily(userData.family_id);
+    }
 
     this.firstName = userData.first_name;
     this.lastName = userData.last_name;
     this.email = userData.email;
 
-    this.userTypesService.getOne(userData.user_type_id).then(result => this.userType = result.type);
+    if (userData.user_type_id) {
+      this.userTypesService.getOne(userData.user_type_id).then(result => this.userType = result.type);
+    }
   }
 
   async fetchFamily(familyId: number) {
