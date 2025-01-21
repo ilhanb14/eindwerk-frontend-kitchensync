@@ -20,7 +20,7 @@ export class FamiliesService {
 
   async addFamily(familyName: string) {
     try {
-      await fetch(this.url + "families", {
+      const response = await fetch(this.url + "families", {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -29,6 +29,11 @@ export class FamiliesService {
           name: familyName
         })
       });
+
+      const data = await response.json();
+
+      return data;
+
     } catch(error) {
       console.error("Error adding family:", error);
     }
