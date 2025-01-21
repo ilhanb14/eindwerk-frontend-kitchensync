@@ -25,4 +25,24 @@ export class UsersService {
       console.error("Error fetching user:", error);
     }
   }
+
+  async assignFamily(familyId: number) {
+    const userId = sessionStorage.getItem('id');
+    console.log("User ID:", userId, "Family ID:", familyId);
+    try {
+      await fetch(this.url + `users/${userId}`, {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          family_id: familyId
+        })
+      });
+    } catch (error) {
+      console.error("Error assigning family to user:", error);
+    }
+
+    window.location.reload();
+  }
 }

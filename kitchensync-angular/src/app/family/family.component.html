@@ -6,11 +6,25 @@
     }
 
     <ul class="family-list">
-        @for (member of family; track $index) {
-            <li>
-                {{member.first_name}} {{member.last_name}}
-            </li>
+        @if (familyId) {
+            @for (member of family; track $index) {
+                <li>
+                    {{member.first_name}} {{member.last_name}}
+                </li>
+            }
+        } @else {
+            <div>
+                <div class="container">
+                    <h3>Maak een familie</h3>
+                    <div>
+                        <p><input class="form-control" type="text" [(ngModel)]="familyName" placeholder="Familienaam"></p>
+                        <p><button (click)="createFamily(familyName)">Maak familie</button> </p>
+                    </div>
+                </div>
+            </div>
         }
     </ul>
 
 </div>
+
+<app-invitation></app-invitation>
