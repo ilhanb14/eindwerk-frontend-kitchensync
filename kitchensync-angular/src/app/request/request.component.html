@@ -26,46 +26,50 @@
 <div id="existing-requests">
     <h3>Requests</h3>
     <button (click)="loadRequests()">Refresh</button>
-    <ul>
-        @for (request of requests; track $index) {
-            <li>
-            Request by {{request.user_name}}<br>
-            @if(request.meal_id) {
-                <!-- TOOD Fetch meal data from spoonacular -->
-                {{request.meal_id}}<br>
-                <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/3f/Placeholder_view_vector.svg/1280px-Placeholder_view_vector.svg.png" width="150px"> <br>
+    @if (requestsLoaded) {
+        <ul>
+            @for (request of requests; track $index) {
+                <li>
+                Request by {{request.user_name}}<br>
+                @if(request.meal_id) {
+                    {{request.meal_title}}<br>
+                    <img [src]="request.meal_image" width="150px"> <br>
+                }
+    
+                Date:
+                @if (request.date) {
+                    {{request.date}}
+                } @else {
+                    No specific date
+                }<br>
+    
+                Mealtime:
+                @if(request.mealtime) {
+                    {{request.mealtime.toUpperCase()[0] + request.mealtime.substr(1).toLowerCase()}}
+                } @else {
+                    No specific mealtime
+                }<br>
+    
+                Comment:
+                @if(request.comment && request.comment != "") {
+                    {{request.comment}}
+                } @else {
+                    No comment
+                }<br>
+    
+                @if (request.cuisine) {
+                    Cuisine: {{request.cuisine}}<br>
+                }
+    
+                @if (userTypeId == 1 || request.user_id == userId) { <!-- Delete button only shown for own requests, all if user is adult -->
+                    <button (click)="deleteRequest(request.id)">Delete</button>
+                }
+    
+                </li>
             }
-
-            Date:
-            @if (request.date) {
-                {{request.date}}
-            } @else {
-                No specific date
-            }<br>
-
-            Mealtime:
-            @if(request.mealtime) {
-                {{request.mealtime.toUpperCase()[0] + request.mealtime.substr(1).toLowerCase()}}
-            } @else {
-                No specific mealtime
-            }<br>
-
-            Comment:
-            @if(request.comment && request.comment != "") {
-                {{request.comment}}
-            } @else {
-                No comment
-            }<br>
-
-            @if (request.cuisine) {
-                Cuisine: {{request.cuisine}}<br>
-            }
-
-            @if (userTypeId == 1 || request.user_id == userId) { <!-- Delete button only shown for own requests, all if user is adult -->
-                <button (click)="deleteRequest(request.id)">Delete</button>
-            }
-
-            </li>
-        }
-    </ul>
+        </ul>
+    } @else {
+        Loading requests...
+    }
+    
 </div>

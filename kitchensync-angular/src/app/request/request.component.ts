@@ -40,7 +40,7 @@ export class RequestComponent {
 
     // Run these functions in parallel and don't continue until all are done
     // TODO recipe title and image
-    await Promise.all([this.addRequestMealtimes(), this.addRequestUserNames()]);
+    await Promise.all([this.addRequestMealtimes(), this.addRequestUserNames(), this.addRequestMealData()]);
 
     this.requestsLoaded = true;
   }
@@ -74,6 +74,25 @@ export class RequestComponent {
   async addRequestMealtimes() {
     for (let request of this.requests) {
       request.mealtime = this.mealtimes.find(mealtime => mealtime.id == request.mealtime_id)?.mealtime;
+    }
+  }
+
+  async addRequestMealData() {
+    // Make list of meal ids to fetch in bulk
+    let mealIds: number[] = [];
+    for (let request of this.requests) {
+      if (request.meal_id)
+        mealIds.push(request.meal_id);
+    }
+
+    // Add title and image values to requests that have a specific meal
+    let meals: any[] = await this.spoonacularService.getMealsById(mealIds);
+    for (let request of this.requests) {
+      let meal = meals.find(meal => meal.id == request.meal_id);
+      if (meal) {
+        request.meal_title = meal.title;
+        request.meal_image = meal.image;
+      }
     }
   }
 
