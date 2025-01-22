@@ -32,8 +32,8 @@
                 <li>
                 Request by {{request.user_name}}<br>
                 @if(request.meal_id) {
-                    {{request.meal_title}}<br>
-                    <img [src]="request.meal_image" width="150px"> <br>
+                    <a [routerLink]="'/recipe/' + request.meal_id">{{request.meal_title}}<br>
+                    <img [src]="request.meal_image" width="150px"> <br> </a>
                 }
     
                 Date:
