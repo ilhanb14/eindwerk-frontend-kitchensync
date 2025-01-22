@@ -7,10 +7,11 @@ import { LikedMealsService } from '../shared/likedmeals.service';
 import { RequestsService } from '../shared/requests.service';
 import { FormsModule } from '@angular/forms';
 import { MealtimesService } from '../shared/mealtimes.service';
+import { ClickOutsideDirective } from '../click-outside.directive';
 
 @Component({
   selector: 'app-recipe',
-  imports: [SafeHtmlPipe, FormsModule],
+  imports: [SafeHtmlPipe, FormsModule, ClickOutsideDirective],
   templateUrl: './recipe.component.html',
   styleUrl: './recipe.component.css'
 })
@@ -36,7 +37,6 @@ export class RecipeComponent implements OnInit {
       if (likedMeals.some((row: any) => row.meal_id == this.id)) {  // If this meal is already liked
         document.getElementById('like-button')!.style.display = "none"; // Hide like button and replace with unlike button
         document.getElementById('unlike-button')!.style.display = "inline-block";
-        console.log("Found meal initially liked");
       }
     })
   }
@@ -53,14 +53,12 @@ export class RecipeComponent implements OnInit {
 
   // Like this recipe
   like() {
-    console.log("Like clicked");
     this.likedMealsService.likeMeal(Number(this.id!), this.userId)
     document.getElementById('like-button')!.style.display = "none"; // Hide like button and replace with unlike button
     document.getElementById('unlike-button')!.style.display = "inline-block";
   }
 
   unlike() {
-    console.log("Unlike clicked");
     this.likedMealsService.deleteLikedMealByData(Number(this.id), this.userId);
     document.getElementById('unlike-button')!.style.display = "none"; // Hide unlike button and replace with like button
     document.getElementById('like-button')!.style.display = "inline-block";
@@ -68,7 +66,16 @@ export class RecipeComponent implements OnInit {
 
   // Show form for making a request with this meal
   showRequestForm() {
+    console.log('showRequestForm called');
     document.getElementById('request-form')!.style.display = "block";
+  }
+
+  hideRequestForm() {
+    console.log("hideRequestForm called");
+      document.getElementById('request-form')!.style.display = "none";
+      (document.getElementById('comment')! as HTMLInputElement).value = "";
+      (document.getElementById('date')! as HTMLInputElement).value = "";
+      (document.getElementById('mealtime-option')! as HTMLInputElement).value = "none";
   }
 
   // Submit request with this meal and form options
