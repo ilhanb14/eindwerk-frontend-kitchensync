@@ -66,21 +66,19 @@ export class RecipeComponent implements OnInit {
 
   // Show form for making a request with this meal
   showRequestForm() {
-    console.log('showRequestForm called');
     document.getElementById('request-form')!.style.display = "block";
   }
 
   hideRequestForm() {
-    console.log("hideRequestForm called");
-      document.getElementById('request-form')!.style.display = "none";
-      (document.getElementById('comment')! as HTMLInputElement).value = "";
-      (document.getElementById('date')! as HTMLInputElement).value = "";
-      (document.getElementById('mealtime-option')! as HTMLInputElement).value = "none";
+    document.getElementById('request-form')!.style.display = "none";
+    (document.getElementById('comment')! as HTMLInputElement).value = "";
+    (document.getElementById('date')! as HTMLInputElement).value = "";
+    (document.getElementById('mealtime-option')! as HTMLInputElement).value = "none";
   }
 
   // Submit request with this meal and form options
   request() {
-    document.getElementById('request-form')!.style.display = "none";
+    this.hideRequestForm();
     let comment = (document.getElementById('comment')! as HTMLInputElement).value;
     let date:string | null = (document.getElementById('date') as HTMLInputElement)?.value;
     let mealtime:string | null = (document.getElementById('mealtime-option')! as HTMLSelectElement).value;
