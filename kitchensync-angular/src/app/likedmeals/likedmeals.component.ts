@@ -1,10 +1,11 @@
 import { Component } from '@angular/core';
 import { LikedMealsService } from '../shared/likedmeals.service';
 import { SpoonacularService } from '../shared/spoonacular.service';
+import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-likedmeals',
-  imports: [],
+  imports: [RouterLink],
   templateUrl: './likedmeals.component.html',
   styleUrl: './likedmeals.component.css'
 })

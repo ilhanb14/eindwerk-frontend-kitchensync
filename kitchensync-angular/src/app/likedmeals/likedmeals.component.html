@@ -3,7 +3,8 @@
 <div id="liked-meals">
     @for (meal of likedMeals; track $index) {
         <div class="liked-meal" [id]="'like-'+meal.id">
-            {{meal.title}} <img [src]="meal.image" width="150px">
+            <a [routerLink]="'/recipe/' + meal.id">{{meal.title}} </a>
+            <a [routerLink]="'/recipe/' + meal.id"><img [src]="meal.image" width="150px"></a>
             <button [id]="'unlike-'+meal.id" (click)="unlikeClicked(meal.id)">Unlike</button>
         </div>
     }
