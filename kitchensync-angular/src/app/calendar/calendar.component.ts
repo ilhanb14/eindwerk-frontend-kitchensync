@@ -21,6 +21,11 @@ interface SpoonacularRecipe {
   servings?: number;
 }
 
+interface MealSlot {
+  time: string;
+  label: string;
+}
+
 @Component({
   selector: 'app-calendar',
   standalone: true,
@@ -34,7 +39,14 @@ export class CalendarComponent implements AfterViewInit {
   recipes: SpoonacularRecipe[] = [];
   currentEvents: EventApi[] = [];
 
+  mealSlots: MealSlot[] = [
+    { time: '06:00:00', label: 'Breakfast' },
+    { time: '12:00:00', label: 'Lunch' },
+    { time: '18:00:00', label: 'Dinner' }
+  ];
+
   calendarOptions: CalendarOptions = {
+    plugins: [dayGridPlugin, timeGridPlugin, interactionPlugin],
     initialView: 'dayGridMonth',
     headerToolbar: {
       left: 'prev,next today',
@@ -42,25 +54,57 @@ export class CalendarComponent implements AfterViewInit {
       right: 'dayGridMonth,timeGridWeek,timeGridDay',
     },
     editable: true,
-    droppable: true, // Accept external draggables
+    droppable: true,
+    views: {
+      timeGridWeek: {
+        slotDuration: '03:00:00',
+        slotMinTime: '06:00:00',
+        slotMaxTime: '21:00:00',
+        allDaySlot: false,
+        slotLabelContent: (arg: any) => this.generateSlotLabel(arg),
+        dayHeaderFormat: { weekday: 'short', month: 'numeric', day: 'numeric' },
+        nowIndicator: true,
+      },
+      timeGridDay: {
+        slotDuration: '03:00:00',
+        slotMinTime: '06:00:00',
+        slotMaxTime: '21:00:00',
+        allDaySlot: false,
+        slotLabelContent: (arg: any) => this.generateSlotLabel(arg),
+        dayHeaderFormat: { weekday: 'short', month: 'numeric', day: 'numeric' },
+        nowIndicator: true,
+      },
+      dayGridMonth: {
+        allDaySlot: true,
+      }
+    },
     eventClick: this.handleEventClick.bind(this),
     eventsSet: this.handleEvents.bind(this),
-    eventReceive: this.handleEventRecieve.bind(this),
-    plugins: [dayGridPlugin, timeGridPlugin, interactionPlugin],
+    eventReceive: this.handleEventReceive.bind(this),
+    eventDrop: (info: any) => {
+      const currentView = info.view.type;
+      if (currentView === 'timeGridWeek' || currentView === 'timeGridDay') {
+        const eventDate = info.event.start;
+        if (eventDate) {
+          const nearestSlot = this.findNearestMealSlot(eventDate);
+          info.event.setStart(this.combineDateAndTime(eventDate, nearestSlot.time));
+        }
+      }
+    },
   };
 
   constructor(private spoonacularService: SpoonacularService) {}
 
   ngAfterViewInit() {
-    // Initialize Draggable for recipe items
     new Draggable(this.recipeContainer.nativeElement, {
-      itemSelector: '.recipe', // CSS class for draggable items
-      eventData: function (el) {
+      itemSelector: '.recipe',
+      eventData: (el) => {
         const recipeData = el.getAttribute('data-recipe');
         if (recipeData) {
           const recipe: SpoonacularRecipe = JSON.parse(recipeData);
           return {
-            title: recipe.title, // Event title
+            title: recipe.title,
+            duration: '03:00:00',
             extendedProps: {
               recipeId: recipe.id,
               image: recipe.image,
@@ -72,6 +116,52 @@ export class CalendarComponent implements AfterViewInit {
         return {};
       },
     });
+  }
+
+  private generateSlotLabel(arg: any) {
+    const hour = arg.date.getHours();
+    const matchingSlot = this.mealSlots.find(slot => 
+      parseInt(slot.time.split(':')[0]) === hour
+    );
+    if (matchingSlot) {
+      return { html: `<div class="meal-slot-label">${matchingSlot.label}</div>` };
+    } else {
+      return { html: '' };
+    }
+  }
+
+  private findNearestMealSlot(date: Date): MealSlot {
+    const hour = date.getHours();
+    const defaultSlot = this.mealSlots[0];
+    
+    return this.mealSlots.reduce((prev, curr) => {
+      const currHour = parseInt(curr.time.split(':')[0]);
+      const prevHour = parseInt(prev.time.split(':')[0]);
+      return Math.abs(currHour - hour) < Math.abs(prevHour - hour) ? curr : prev;
+    }, defaultSlot);
+  }
+
+  private combineDateAndTime(date: Date, timeString: string): Date {
+    const [hours, minutes, seconds] = timeString.split(':').map(Number);
+    const newDate = new Date(date);
+    newDate.setHours(hours, minutes, seconds);
+    return newDate;
+  }
+
+  handleEventReceive(info: any) {
+    const currentView = info.view.type;
+    const droppedEvent = info.event;
+    
+    if ((currentView === 'timeGridWeek' || currentView === 'timeGridDay') && droppedEvent.start) {
+      const nearestSlot = this.findNearestMealSlot(droppedEvent.start);
+      droppedEvent.setStart(this.combineDateAndTime(droppedEvent.start, nearestSlot.time));
+    }
+    
+    if (droppedEvent.extendedProps?.recipeId) {
+      droppedEvent.setProp('title', droppedEvent.title);
+    } else {
+      console.error('no data found for dropped event');
+    }
   }
 
   async searchRecipes(query: string) {
@@ -102,23 +192,10 @@ export class CalendarComponent implements AfterViewInit {
     }
   }
 
-  handleEventRecieve(info: any) {
-    const droppedEvent = info.event;
-    const title = droppedEvent.title;
-    console.log('dropped event data:',{
-      event: droppedEvent,
-      Title: droppedEvent.title,
-      extendedProps: droppedEvent.extendedProps,
-    });
-    if (droppedEvent.extendedProps?.recipeId) {
-      droppedEvent.setProp('title', droppedEvent.title);
-    }else{
-      console.error('no data found for dropped event');
-    }
-  }
   stringify(recipe: SpoonacularRecipe): string {
     return JSON.stringify(recipe);
   }
+
   handleEvents(events: EventApi[]) {
     this.currentEvents = events;
   }
