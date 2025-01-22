@@ -17,7 +17,7 @@
     <select id="cuisine-option">
         <option value="none">None</option>
         @for(cuisine of cuisines; track $index) {
-            <option [value]="cuisine">{{cuisine}}</option>
+            <option [value]="cuisine.name">{{cuisine.name}}</option>
         }
     </select><br>
     <button (click)="makeRequest()">Make request</button><br>
@@ -25,15 +25,11 @@
 </div>
 <div id="existing-requests">
     <h3>Requests</h3>
-    <button (click)="fetchExistingRequests()">Refresh</button>
+    <button (click)="loadRequests()">Refresh</button>
     <ul>
-        @for (request of existingRequests; track $index) {
+        @for (request of requests; track $index) {
             <li>
-            @for (user of userNames; track $index) {
-                @if (user.id == request.user_id) {
-                    Request by {{ user.fullName }}
-                }
-            } <br>
+            Request by {{request.user_name}}<br>
             @if(request.meal_id) {
                 <!-- TOOD Fetch meal data from spoonacular -->
                 {{request.meal_id}}<br>
