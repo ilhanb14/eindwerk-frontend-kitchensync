@@ -1,61 +1,80 @@
-<div id="input-request">
-    <h3>Make a request</h3>
-    Date:
-    <input type="date" id="date" [disabled]="!includeDate"><br>
-    Include date?
-    <input type="checkbox" id="include-date" [(ngModel)]="includeDate"><br>
-    Mealtime:
-    <select id="mealtime-option">
-        <option value="none">None</option>
-        @for (mealtime of mealtimes; track $index) {
-            <option [value]="mealtime.id">{{mealtime.mealtime}}</option>
-        }
-    </select><br>
-    Comment:
-    <textarea id="comment"></textarea><br>
-    Cuisine:
-    <select id="cuisine-option">
-        <option value="none">None</option>
-        @for(cuisine of cuisines; track $index) {
-            <option [value]="cuisine.name">{{cuisine.name}}</option>
-        }
-    </select><br>
-    <button (click)="makeRequest()">Make request</button><br>
-    Want to request a specific recipe? <a routerLink="/recipes">Find some here!</a>
-</div>
-<div id="existing-requests">
-    <h3>Requests</h3>
-    <button (click)="loadRequests()">Refresh</button>
-    @if (requestsLoaded) {
-        <ul>
-            @for (request of requests; track $index) {
-                <li>
-                Request by {{request.user_name}}<br>
-                @if(request.meal_id) {
-                    <a [routerLink]="'/recipe/' + request.meal_id">{{request.meal_title}}<br>
-                    <img [src]="request.meal_image" width="150px"> <br> </a>
+<div class="p-6">
+    <div id="input-request">
+        <h3 class="text-2xl font-bold my-4">Make a request</h3>
+        <div class="space-y-1 flex items-center">
+            <span class="font-medium mr-3">Date: </span>
+            <input class="bg-gray-50 border max-w-32 border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" type="date" id="date" [disabled]="!includeDate">
+        </div>
+        <div class="space-y-1 flex items-center mb-1">
+            <span class="font-small mr-3">Include date?</span>
+            <input type="checkbox" id="include-date" [(ngModel)]="includeDate">
+        </div>
+        <div class="space-y-1 flex items-center">
+            <span class="font-medium mr-3">Mealtime: </span>
+            <select id="mealtime-option">
+                <option value="none">None</option>
+                @for (mealtime of mealtimes; track $index) {
+                    <option [value]="mealtime.id">{{mealtime.mealtime}}</option>
                 }
-    
+            </select>
+        </div>
+        <div>
+            <span class="font-medium mr-3">Comment: </span>
+            <textarea class="bg-gray-50 border max-w-32 border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" id="comment"></textarea>
+        </div>
+        <div>
+            <span class="font-medium mr-3">Cuisine: </span>
+            <select id="cuisine-option">
+                <option value="none">None</option>
+                @for(cuisine of cuisines; track $index) {
+                    <option [value]="cuisine.name">{{cuisine.name}}</option>
+                }
+            </select>
+        </div>
+        <button class="flex items-center gap-1 px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors" (click)="makeRequest()">Make request</button>
+        <div class="mt-2">
+            Want to request a specific recipe? <a routerLink="/recipes" class="text-blue-600 dark:text-blue-500 hover:underline">Find some here!</a>
+        </div>
+    </div>
+    <div id="existing-requests">
+        <h3 class="text-2xl font-bold my-4">Requests</h3>
+        <button class="flex items-center gap-1 px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors" (click)="fetchExistingRequests()">Refresh</button>
+        @if (requestsLoaded) {
+        <ul>
+            @for (request of existingRequests; track $index) {
+                <li>
+                @for (user of userNames; track $index) {
+                    @if (user.id == request.user_id) {
+                        Request by {{ user.fullName }}
+                    }
+                } <br>
+                @if(request.meal_id) {
+                    <!-- TOOD Fetch meal data from spoonacular -->
+                    {{request.meal_id}}<br>
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/3f/Placeholder_view_vector.svg/1280px-Placeholder_view_vector.svg.png" width="150px"> <br>
+                }
+
                 Date:
                 @if (request.date) {
                     {{request.date}}
                 } @else {
                     No specific date
                 }<br>
-    
+
                 Mealtime:
                 @if(request.mealtime) {
                     {{request.mealtime.toUpperCase()[0] + request.mealtime.substr(1).toLowerCase()}}
                 } @else {
                     No specific mealtime
                 }<br>
-    
+
                 Comment:
                 @if(request.comment && request.comment != "") {
                     {{request.comment}}
                 } @else {
                     No comment
                 }<br>
+
     
                 @if (request.cuisine) {
                     Cuisine: {{request.cuisine}}<br>
@@ -71,5 +90,6 @@
     } @else {
         Loading requests...
     }
-    
+    </div>
+
 </div>

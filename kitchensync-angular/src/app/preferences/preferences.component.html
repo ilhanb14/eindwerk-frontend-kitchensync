@@ -1,13 +1,16 @@
-<h3>Preferences</h3>
 <div>
-<ul>
-    @for (preference of preferenceList; track $index) {
-        <li [id]="'pref-'+preference.id">
-            {{ preference.name[0].toUpperCase() + preference.name.substr(1).toLowerCase() }} @if (preference.allergy) { allergy }
-            <input [id]="'check-'+preference.id" type="checkbox" (click)="preferenceToggled(preference.id)"> Important? <input [id]="'important-'+preference.id" type="checkbox" disabled="true">
-        </li>
-    }
+    <h3 class="text-2xl font-bold my-4">Preferences</h3>
+    <div class="space-y-1">
+        <ul>
+            @for (preference of preferenceList; track $index) {
+                <li [id]="'pref-'+preference.id">
+                    {{ preference.name[0].toUpperCase() + preference.name.substr(1).toLowerCase() }} @if (preference.allergy) { allergy }
+                    <input [id]="'check-'+preference.id" type="checkbox" (click)="preferenceToggled(preference.id)"> Important? <input [id]="'important-'+preference.id" type="checkbox" disabled="true">
+                </li>
+            }
 
-    <button id="save" (click)="saveChanges()">Save changes</button>
-</ul>
+        </ul>
+        <button class="flex items-center gap-1 px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors" id="save" (click)="saveChanges()">Save changes</button>
+
+    </div>
 </div>
