@@ -27,6 +27,9 @@ export const authGuard: CanActivateFn = async (route, state) => {
         sessionStorage.setItem('family_id', data.user.family_id);
         return true;
       }
+      alert("Token expired or incorrect. Please log in again")
+      router.navigate(['/login']);
+      return false;
     } catch (error) {
       console.error('Token verification failed', error);
     };
@@ -37,7 +40,7 @@ export const authGuard: CanActivateFn = async (route, state) => {
   localStorage.setItem('redirectUrl', state.url);
   
   // If no token, redirect to login page
-  // router.navigate(['/login']);
+  router.navigate(['/login']);
   return false;
 };
 
