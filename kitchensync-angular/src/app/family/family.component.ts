@@ -3,6 +3,7 @@ import { FamiliesService } from '../shared/families.service';
 import { UsersService } from '../shared/users.service';
 import { FormsModule } from '@angular/forms';
 import { InvitationComponent } from "../invitation/invitation.component";
+import { InvitationsService } from '../shared/invitations.service';
 
 @Component({
   selector: 'app-family',
@@ -18,10 +19,13 @@ export class FamilyComponent {
   error: string | null = null;
   familyId: number | null = null;
   familyName!: string;
+  emailInvite!: string;
+  inviteMessage: string = '';
 
   constructor(
     private familiesService: FamiliesService,
     private usersService: UsersService,
+    private invitationsService: InvitationsService,
   ) { 
     this.getFamily()
   }
@@ -57,5 +61,16 @@ export class FamilyComponent {
     console.log(this.familyId);
 
     this.usersService.assignFamily(this.familyId)
+  }
+
+  async invite(emailInvite: string) {
+    // Reset inviteMessage
+    this.inviteMessage = '';
+
+    // Call the invite function. This will add an invitation and return a message
+    const response = await this.invitationsService.invite(emailInvite, String(this.userId), String(this.familyId));
+
+    // Display the message
+    this.inviteMessage = await response.message;
   }
 }
