@@ -36,58 +36,76 @@
             Want to request a specific recipe? <a routerLink="/recipes" class="text-blue-600 dark:text-blue-500 hover:underline">Find some here!</a>
         </div>
     </div>
-    <div id="existing-requests">
+
+    <div class="max-w-3xl space-y-2" id="existing-requests">
         <h3 class="text-2xl font-bold my-4">Requests</h3>
         <button class="flex items-center gap-1 px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors" (click)="loadRequests()">Refresh</button>
         @if (requestsLoaded) {
-        <ul>
+        <ul class="space-y-2">
             @for (request of requests; track $index) {
-                <li>
+                <li class="bg-white rounded-lg shadow-sm border border-gray-200 p-4 hover:shadow-md transition-shadow">
+                    <div class="flex flex-wrap justify-between">
+                        <div class="w-1/4 space-y-1">
+                            <div class="font-medium">
+                                <span class="text-gray-600">Request by:</span> {{ request.user_name }}
+                            </div>
+                            @if (request.date) {
+                                <div>
+                                    <span class="text-gray-600">Date:</span>
+                                    {{request.date}}
+                                </div>  
+                            }
+                            @if (request.mealtime) {
+                                <div>
+                                    <span class="text-gray-600">Mealtime:</span>
+                                    {{request.mealtime}}
+                                </div>  
+                            }
+                            @if (request.comment) {
+                                <div>
+                                    <span class="text-gray-600">Comment:</span>
+                                        {{request.comment}}
+                                </div>                                
+                            }
+                            @if (request.cuisine) {
+                                <div>
+                                    <span class="text-gray-600">Cuisine:</span>
+                                    {{request.cuisine}}
+                                </div>  
+                            }
 
-                Request by {{ request.user_name }}                    
+                            <div class="text-sm text-gray-500">
+                                <!-- Status: {{invitation.status.status}} -->
+                            </div>
+                        </div>
 
-                @if(request.meal_title) {
-                    <!-- TOOD Fetch meal data from spoonacular -->
-                    <a [routerLink]="'/recipe/' + request.meal_id">{{request.meal_title}}<br>
-                    <img [src]="request.meal_image" width="150px"> <br> </a>
-                }
-
-                Date:
-                @if (request.date) {
-                    {{request.date}}
-                } @else {
-                    No specific date
-                }<br>
-
-                Mealtime:
-                @if(request.mealtime) {
-                    {{request.mealtime.toUpperCase()[0] + request.mealtime.substr(1).toLowerCase()}}
-                } @else {
-                    No specific mealtime
-                }<br>
-
-                Comment:
-                @if(request.comment && request.comment != "") {
-                    {{request.comment}}
-                } @else {
-                    No comment
-                }<br>
-
-    
-                @if (request.cuisine) {
-                    Cuisine: {{request.cuisine}}<br>
-                }
-    
-                @if (userTypeId == 1 || request.user_id == userId) { <!-- Delete button only shown for own requests, all if user is adult -->
-                    <button (click)="deleteRequest(request.id)">Delete</button>
-                }
-    
+                        <div class="w-1/3 self-start">
+                            @if(request.meal_title) {
+                                <!-- TOOD Fetch meal data from spoonacular -->
+                                <a class="font-medium" [routerLink]="'/recipe/' + request.meal_id">{{request.meal_title}}<br>
+                                <img [src]="request.meal_image" width="150px"> <br> </a>
+                            }
+                        </div>
+                        
+                        <div class="flex items-center gap-2">
+                            @if (userTypeId == 1 || request.user_id == userId) {
+                                <button
+                                    (click)="deleteRequest(request.id)"
+                                    
+                                    class="flex items-center gap-1 px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                                >
+                                    
+                                    Delete
+                                </button>
+                            }
+                        </div>
+                    </div>
                 </li>
             }
         </ul>
-    } @else {
+        } @else {
         Loading requests...
-    }
+        }
     </div>
 
 </div>
