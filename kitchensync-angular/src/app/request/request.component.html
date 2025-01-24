@@ -38,20 +38,18 @@
     </div>
     <div id="existing-requests">
         <h3 class="text-2xl font-bold my-4">Requests</h3>
-        <button class="flex items-center gap-1 px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors" (click)="fetchExistingRequests()">Refresh</button>
+        <button class="flex items-center gap-1 px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors" (click)="loadRequests()">Refresh</button>
         @if (requestsLoaded) {
         <ul>
-            @for (request of existingRequests; track $index) {
+            @for (request of requests; track $index) {
                 <li>
-                @for (user of userNames; track $index) {
-                    @if (user.id == request.user_id) {
-                        Request by {{ user.fullName }}
-                    }
-                } <br>
-                @if(request.meal_id) {
+
+                Request by {{ request.user_name }}                    
+
+                @if(request.meal_title) {
                     <!-- TOOD Fetch meal data from spoonacular -->
-                    {{request.meal_id}}<br>
-                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/3f/Placeholder_view_vector.svg/1280px-Placeholder_view_vector.svg.png" width="150px"> <br>
+                    <a [routerLink]="'/recipe/' + request.meal_id">{{request.meal_title}}<br>
+                    <img [src]="request.meal_image" width="150px"> <br> </a>
                 }
 
                 Date:
