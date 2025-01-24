@@ -1,5 +1,6 @@
-import { Component } from '@angular/core';
+import { Component, signal } from '@angular/core';
 import { InvitationsService } from '../shared/invitations.service';
+import { FamilyComponent } from '../family/family.component';
 
 @Component({
   selector: 'app-invitation',
@@ -9,10 +10,11 @@ import { InvitationsService } from '../shared/invitations.service';
 })
 export class InvitationComponent {
   userId: number = Number(sessionStorage.getItem('id'));
-  invitations: any[] = [];
+  invitations = signal<any[]>([]);
 
   constructor(
-    private invitationsService: InvitationsService
+    private invitationsService: InvitationsService,
+    private familyComponent: FamilyComponent,
   ) { 
 
     this.getInvitations();
@@ -21,9 +23,10 @@ export class InvitationComponent {
   async getInvitations() {
     try {
       const response = await this.invitationsService.getUserInvitations(this.userId);
+
       if (response) {
-        this.invitations = response;
-        return this.invitations;
+        const pending = response.filter((invitation: { status_id: number}) => invitation.status_id === 1);
+        this.invitations.set(pending);
       }
     } catch (error) {
       console.error('There was a problem with getting user invitations:', error);
@@ -33,8 +36,9 @@ export class InvitationComponent {
 
   async handleRefuse(invitationId: number) {
     try {
-      await this.invitationsService.updateStatus(invitationId, 'declined');
-      await this.getInvitations();
+      await this.invitationsService.delete(invitationId);
+      this.invitations.update((invitations) => 
+        invitations.filter((invitation) => invitation.id !== invitationId));
     } catch (error) {
       console.error('There was a problem declining the invitation:', error);
     }
@@ -43,7 +47,9 @@ export class InvitationComponent {
   async handleAccept(invitationId: number) {
     try {
       await this.invitationsService.updateStatus(invitationId, 'accepted');
-      this.getInvitations();
+      this.invitations.update((invitations) => 
+        invitations.filter((invitation) => invitation.id !== invitationId));
+      await this.familyComponent.getFamily() 
     } catch (error) {
       console.error('There was a problem accepting the invitation:', error);
     }
