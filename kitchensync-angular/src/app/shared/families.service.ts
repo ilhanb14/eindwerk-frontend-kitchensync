@@ -67,7 +67,7 @@ export class FamiliesService {
 
   async getUsersInFamily(familyId: number) {
     try {
-      const response = await fetch(`${this.url}/users/family/${familyId}`);
+      const response = await fetch(`${this.url}users/family/${familyId}`);
       return await response.json();
     } catch(error) {
       console.error("Error fetching users in family:", error);
