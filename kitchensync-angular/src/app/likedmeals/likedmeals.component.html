@@ -4,7 +4,7 @@
     <div id="liked-meals" class="overflow-x-auto flex justify-start flex-row">
         @for (meal of likedMeals; track $index) {
             <div class="liked-meal" [id]="'like-'+meal.id">
-                <div class="flex justify-between flex-col h-full items-center text-center">
+                <div class="flex justify-between flex-col h-full items-center text-center rounded-lg shadow-sm border border-gray-200 p-2">
                     <a [routerLink]="'/recipe/' + meal.id">{{meal.title}} </a>
                     <a [routerLink]="'/recipe/' + meal.id"><img [src]="meal.image" width="150px"></a>
                 </div>
