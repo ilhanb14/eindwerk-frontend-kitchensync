@@ -1,24 +1,31 @@
-<div id="user-data">
-    <h3>Personal Info</h3>
-    <div>
-        <p>Name: {{firstName}} {{lastName}}</p>
-        <p>Email: {{email}} </p>
-        <p><a href="/family">Family</a>:
+<div class="p-6" id="user-data">
+    <h3 class="text-2xl font-bold my-4">Personal Info</h3>
+    <div class="space-y-1">
+        <p><span class="font-medium">Name: </span>{{firstName}} {{lastName}}</p>
+        <p><span class="font-medium">Email: </span>{{email}} </p>
+        <p><span class="font-medium">Family: </span>
             @if (familyName) { 
                 {{familyName}}
-            } @else {<a href="/family">Voeg familie toe</a>} </p>
-        <p>User Type:
-            @if (userType) { <!-- Trying to get the first char of an empty string will cause errors -->
+            } @else {<a href="/family" class="text-blue-600 dark:text-blue-500 hover:underline">Add a family</a>} </p>
+        <p><span class="font-medium">User Type: </span>
+            @if (userType) {
                 {{userType[0].toUpperCase() + userType.substr(1).toLowerCase()}}
+            } @else if (familyName) {
+                Assign a user type
+            } @else {
+                Add a family
             }
         </p>
     </div>
-    <h3>Family Members</h3>
-    <ul id="family">
+    <h3 class="text-2xl font-bold my-4">Family Members</h3>
+    <ul id="family space-y-2">
         @for (familyMember of family; track $index) {
             {{familyMember.first_name}} {{familyMember.last_name}}
         }
     </ul>
-</div>
+    <a href="/family" class="text-blue-600 dark:text-blue-500 hover:underline">See your family page</a>
+
 <app-likedmeals></app-likedmeals>
 <app-preferences></app-preferences>
+
+</div>

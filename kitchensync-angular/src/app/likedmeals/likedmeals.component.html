@@ -1,10 +1,12 @@
-<h3>Liked Meals</h3>
-<!-- TODO use bootstrap or change custom CSS to make this list scrollable horizontally (?) -->
-<div id="liked-meals">
-    @for (meal of likedMeals; track $index) {
-        <div class="liked-meal" [id]="'like-'+meal.id">
-            {{meal.title}} <img [src]="meal.image" width="150px">
-            <button [id]="'unlike-'+meal.id" (click)="unlikeClicked(meal.id)">Unlike</button>
-        </div>
-    }
-</div>
+@if (likedMeals.length != 0) {
+    <h3 class="text-2xl font-bold my-4">Liked Meals</h3>
+    <!-- TODO use bootstrap or change custom CSS to make this list scrollable horizontally (?) -->
+    <div id="liked-meals">
+        @for (meal of likedMeals; track $index) {
+            <div class="liked-meal" [id]="'like-'+meal.id">
+                {{meal.title}} <img [src]="meal.image" width="150px">
+                <button [id]="'unlike-'+meal.id" (click)="unlikeClicked(meal.id)">Unlike</button>
+            </div>
+        }
+    </div>
+}
