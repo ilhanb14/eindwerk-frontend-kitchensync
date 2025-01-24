@@ -5,6 +5,7 @@ import { MealtimesService } from '../shared/mealtimes.service';
 import { CuisinesService } from '../shared/cuisines.service';
 import { RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
+import { SpoonacularService } from '../shared/spoonacular.service';
 
 @Component({
   selector: 'app-request',
@@ -13,51 +14,86 @@ import { FormsModule } from '@angular/forms';
   styleUrl: './request.component.css'
 })
 export class RequestComponent {
-  existingRequests: any[] = [];
-  userNames: any[] = [];
+  requests: any[] = [];
   userId: number = Number(sessionStorage.getItem('id'));
   userTypeId: number = Number(sessionStorage.getItem('user_type_id')); // This restricts some actions such as seeing other users's requests
   familyId: number = Number(sessionStorage.getItem('family_id'));
-  cuisines: string[] = [];
+  cuisines: any[] = [];
   mealtimes: any[] = [];
   includeDate = true; // Used to know if date input should be read
+  requestsLoaded = false;
 
-  constructor(private usersService: UsersService, private requestsService: RequestsService, private mealtimesService : MealtimesService, private cuisinesService : CuisinesService) {
-    this.fetchExistingRequests();
+  constructor(
+    private usersService: UsersService, private requestsService: RequestsService,
+    private mealtimesService: MealtimesService, private cuisinesService : CuisinesService,
+    private spoonacularService: SpoonacularService) {
+    // Get all cuisines and mealtimes from database
+    // Mealtimes are also used in loadRequests so each request has it's mealtime as a string
     this.fetchCuisines();
-    this.fetchMealtimes();
+    this.fetchMealtimes().then(response => this.loadRequests());
   }
 
-  async fetchExistingRequests() {
-    this.existingRequests = await this.requestsService.getByFamily(this.familyId);
-    if (this.userTypeId == 2) { // If child user, filter out requests made by different users
-      this.existingRequests = this.existingRequests.filter(request => request.user_id == this.userId);
-    }
+  async loadRequests() {
+    console.log("loadRequests called");
+    this.requestsLoaded = false;
+    await this.fetchRequests();
 
-    // Get mealtimes and assign to each request
-    this.mealtimesService.getAll().then(response => {
-      for (let request of this.existingRequests) {
-        if (request.mealtime_id) {
-          request.mealtime = response.find((mealtime: any) => mealtime.id == request.mealtime_id).mealtime;
-        }
-      }
-    })
+    // Run these functions in parallel and don't continue until all are done
+    // TODO recipe title and image
+    await Promise.all([this.addRequestMealtimes(), this.addRequestUserNames(), this.addRequestMealData()]);
 
-    // TODO fetch meal title and image from spoonacular for requests with specific meals
-
-    // Get list of names of users who have made requests, this is used to display names with requests
-    let userIds = this.existingRequests.map(request => request.user_id);  // userIds for each request, contains duplicates
-    let users = await this.usersService.getAll().then(result => result.filter((user: any) => userIds.some(id => user.id == id)));  // Get all users whose id is in userIds
-    this.userNames = users.map((user: any) => {return {id: user.id, fullName: user.first_name + " " + user.last_name}});
+    this.requestsLoaded = true;
   }
 
   async fetchCuisines() {
-    let response = await this.cuisinesService.getAll();
-    this.cuisines = response.map((cuisine: any) => cuisine.name);
+    this.cuisines = await this.cuisinesService.getAll();
   }
 
   async fetchMealtimes() {
     this.mealtimes = await this.mealtimesService.getAll();
+  }
+
+  async fetchRequests() {
+    this.requests = await this.requestsService.getByFamily(this.familyId);
+
+    if (this.userTypeId == 2) { // If child user, filter out requests made by different users
+      this.requests = this.requests.filter(request => request.user_id == this.userId);
+    }
+  }
+
+  // Add names to requests for display
+  async addRequestUserNames() {
+    let users: any[] = await this.usersService.getAll();
+    for (let request of this.requests) {  // For each request, add the full name of the user that made it
+      let user = users.find(user => user.id == request.user_id);
+      request.user_name = user.first_name + " " + user.last_name;
+    }
+  }
+
+  // Add mealtimes as strings to requests for display
+  async addRequestMealtimes() {
+    for (let request of this.requests) {
+      request.mealtime = this.mealtimes.find(mealtime => mealtime.id == request.mealtime_id)?.mealtime;
+    }
+  }
+
+  async addRequestMealData() {
+    // Make list of meal ids to fetch in bulk
+    let mealIds: number[] = [];
+    for (let request of this.requests) {
+      if (request.meal_id)
+        mealIds.push(request.meal_id);
+    }
+
+    // Add title and image values to requests that have a specific meal
+    let meals: any[] = await this.spoonacularService.getMealsById(mealIds);
+    for (let request of this.requests) {
+      let meal = meals.find(meal => meal.id == request.meal_id);
+      if (meal) {
+        request.meal_title = meal.title;
+        request.meal_image = meal.image;
+      }
+    }
   }
 
   makeRequest() {
@@ -99,10 +135,10 @@ export class RequestComponent {
   }
 
   deleteRequest(id: number) {
-    const request = this.existingRequests.find(request => request.id == id);
+    const request = this.requests.find(request => request.id == id);
     if (this.userTypeId == 1 || this.userId == request.user_id) {
       this.requestsService.delete(id);
-      this.existingRequests = this.existingRequests.filter(otherRequest => otherRequest.id != request.id);  // Update local array
+      this.requests = this.requests.filter(otherRequest => otherRequest.id != request.id);  // Update local array
     }
   }
 }

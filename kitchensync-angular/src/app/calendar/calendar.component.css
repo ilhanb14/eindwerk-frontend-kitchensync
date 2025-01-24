@@ -130,3 +130,46 @@ h2 {
     text-align: center;
     margin: 0;
   }
+  ::ng-deep .fc-timegrid-slot {
+    height: 100px !important;
+    border: none !important;
+  }
+
+
+  ::ng-deep .fc-timegrid-slot-label-cushion {
+    font-weight: bold;
+    color: #666;
+  }
+
+  ::ng-deep .fc-col-header-cell {
+    background-color: #f8f9fa;
+    padding: 1rem !important;
+   
+  }
+
+  ::ng-deep .fc-timegrid-axis {
+    border: none !important;
+  }
+
+
+
+  ::ng-deep .fc-timegrid-col-frame {
+    border: none !important;
+  }
+
+  ::ng-deep .fc-event {
+    border-radius: 8px;
+    border: none;
+    padding: 4px 8px;
+  }
+
+  ::ng-deep .fc-day-today {
+    background-color: rgba(var(--fc-today-bg-color, 245, 245, 245), 0.3) !important;
+  }
+
+  ::ng-deep .meal-slot-label {
+    font-weight: 500;
+    color: #666;
+    padding: 8px;
+    text-align: right;
+  }
