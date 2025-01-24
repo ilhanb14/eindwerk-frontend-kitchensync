@@ -4,6 +4,7 @@ import { UsersService } from '../shared/users.service';
 import { FamiliesService } from '../shared/families.service';
 import { UserTypesService } from '../shared/usertypes.service';
 import { LikedMealsComponent } from "../likedmeals/likedmeals.component";
+import { User } from '../interfaces/user';
 
 @Component({
   selector: 'app-user',
@@ -41,9 +42,12 @@ export class UserComponent {
   }
 
   async fetchFamily(familyId: number) {
+    // Get the correct family name
     this.familiesService.getById(familyId).then(result => this.familyName = result.name);
 
-    this.familiesService.getUsersInFamily(familyId).then(result => this.family = result.filter(user => user.id != this.userId));
+    // Get all users in the family
+    const response = await this.familiesService.getUsersInFamily(familyId);
+    this.family = await response.filter((user: User) => user.id != this.userId);
     
     // TODO link to family page
   }
