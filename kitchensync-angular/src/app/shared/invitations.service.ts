@@ -55,7 +55,7 @@ export class InvitationsService {
 
   }
 
-  async updateStatus(invitationId: number, status: 'accepted' | 'declined') {
+  async updateStatus(invitationId: number, status: 'accepted') {
     try {
       const response = await fetch(`${this.url}/invitations/${invitationId}`, {
         method: 'PATCH',
@@ -77,5 +77,15 @@ export class InvitationsService {
       console.error('There was a problem with updating invitation status:', error);
     }
   }
+
+  async delete(invitationId: number) {
+    try {
+        await fetch(`${this.url}/invitations/${invitationId}`, {
+        method: 'DELETE'
+      });
+    } catch (error) {
+      console.error('There was a problem deleting the invitation:', error);
+    }
+  } 
 
 }
