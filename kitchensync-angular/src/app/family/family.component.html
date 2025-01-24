@@ -1,24 +1,70 @@
-<div>    
-    
+<div class="max-w-3xl p-6">    
+  <h2 class="text-3xl font-bold mb-4">Family</h2>  
     <!-- Show loading message -->
     @if (loading) {
         <p>Loading family...</p>
     }
-
-    <ul class="family-list">
+    <h3 class="text-2xl font-bold my-4">Family Members</h3>
+    <ul class="family-list space-y-2">
         @if (familyId) {
             @for (member of family; track $index) {
-                <li>
-                    {{member.first_name}} {{member.last_name}}
-                </li>
+                <li 
+            key={index} 
+            class="bg-white rounded-lg shadow-sm border border-gray-200 p-4 hover:shadow-md transition-shadow"
+          >
+            <div class="flex justify-between items-center">
+              <div class="space-y-1">
+                <div class="font-medium">
+                  <span class="text-gray-600">Member:</span> {{member.first_name}} {{member.last_name}}
+                </div>
+                <div>
+                    @if (member.user_type) {
+                        <span class="text-gray-600">Type:</span> {{member.user_type.type}}
+                    }
+                    @else {
+                        <span class="text-gray-600">Type:</span> assign a type
+                    }
+                </div>
+              </div>
+              
+              <div class="flex gap-2">
+                <!-- <button
+                  (click)="handleAccept(invitation.id)"
+                  
+                  class="flex items-center gap-1 px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                > -->
+                 
+                  Accept
+                <!-- </button>
+                <button
+                  (click)="handleRefuse(invitation.id)"
+                  
+                  class="flex items-center gap-1 px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                > -->
+                  
+                  Refuse
+                <!-- </button> -->
+              </div>
+            </div>
+          </li>
             }
+        
+            <h3 class="text-lg font-bold my-4">Add a new member</h3>
+            <div class="gap-6">
+                <label for="first_name" class="block mb-2 font-medium text-gray-900 dark:text-white">Email new member</label>
+                <input type="text" id="email" class="bg-gray-50 border max-w-sm border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"  
+                    placeholder="Email" [(ngModel)]="emailInvite" required />
+            </div>
+            <p class="text-sm text-red-500"> @if (inviteMessage) { {{inviteMessage}} }
+            </p>
+            <p><button (click)="invite(emailInvite)" class="flex items-center gap-1 px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors">Add member</button> </p>
         } @else {
             <div>
                 <div class="container">
-                    <h3>Maak een familie</h3>
+                    <h3>Create a family</h3>
                     <div>
                         <p><input class="form-control" type="text" [(ngModel)]="familyName" placeholder="Familienaam"></p>
-                        <p><button (click)="createFamily(familyName)">Maak familie</button> </p>
+                        <p><button (click)="createFamily(familyName)" class="flex items-center gap-1 px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors">Create family</button> </p>
                     </div>
                 </div>
             </div>
