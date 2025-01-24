@@ -1,17 +1,10 @@
-#liked-meals {
-    display: flex;
-    justify-content: start;
-    flex-direction: row;
-    flex-wrap: wrap;
-}
-
 .liked-meal {
     max-width: 200px;
     min-width: 150px;
 
     display: flex;
     flex-direction: column;
-    justify-content: space-around;
+    justify-content: start;
     align-items: center;
 
     margin-left: 15px;
