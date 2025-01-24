@@ -18,12 +18,23 @@ export class InvitationsService {
         body: JSON.stringify({ email, "inviter_id": inviterId, "family_id": familyId})
       });
 
+      const data = await response.json();
+      console.log(data);
       // Check if the response is OK
       if (!response.ok) {
-        throw new Error("Couldn't invite user");
+        // Handle different error cases
+        if (data.error_code === 'USER_NOT_FOUND') {
+          return { success: false, message: "User not found." };
+        } else if (data.error_code === 'INVALID_EMAIL_FORMAT') {
+          return { success: false, message: "Your input is not an email." };
+        } else if (data.error_code === 'USER_ALREADY_INVITED') {
+          return { success: false, message: "User already invited." };
+        } else if (data.error_code === 'USER_ALREADY_IN_FAMILY') {
+          return { success: false, message: "User already in family." };
+        } else {
+          return { success: false, message: "An unexpected error occurred. Try again later." };
+        }
       }
-
-      const data = await response.json();
 
       return data;
     } catch (error) {
