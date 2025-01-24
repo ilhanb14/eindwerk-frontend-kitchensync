@@ -1,12 +1,14 @@
 @if (likedMeals) {
     <h3>Liked Meals</h3>
     <!-- TODO use bootstrap or change custom CSS to make this list scrollable horizontally (?) -->
-    <div id="liked-meals">
+    <div id="liked-meals" class="overflow-x-auto flex justify-start flex-row">
         @for (meal of likedMeals; track $index) {
             <div class="liked-meal" [id]="'like-'+meal.id">
-                <a [routerLink]="'/recipe/' + meal.id">{{meal.title}} </a>
-                <a [routerLink]="'/recipe/' + meal.id"><img [src]="meal.image" width="150px"></a>
-                <button [id]="'unlike-'+meal.id" (click)="unlikeClicked(meal.id)">Unlike</button>
+                <div class="flex justify-between flex-col h-full items-center text-center rounded-lg shadow-sm border border-gray-200 p-2">
+                    <a [routerLink]="'/recipe/' + meal.id">{{meal.title}} </a>
+                    <a [routerLink]="'/recipe/' + meal.id"><img [src]="meal.image" width="150px"></a>
+                </div>
+                <button class="flex items-center mt-2 gap-1 px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors" [id]="'unlike-'+meal.id" (click)="unlikeClicked(meal.id)">Unlike</button>
             </div>
         }
     </div>
