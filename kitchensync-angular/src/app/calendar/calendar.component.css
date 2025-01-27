@@ -47,6 +47,24 @@
     border-radius: 4px;
   }
   
+  .dropdown-container {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    z-index: 1000;
+  }
+  
+  .meal-slot-dropdown {
+    width: 100%;
+    padding: 10px;
+    margin-top: 10px;
+  }
+
   button {
     padding: 8px 12px;
     font-size: 14px;
@@ -81,20 +99,6 @@
     font-size: 14px;
     text-align: center;
     margin: 0;
-  }
-  ::ng-deep .fc-timegrid-slot {
-    height: 100px !important;
-    border: none !important;
-  }
-
-
-  ::ng-deep .fc-timegrid-slot-label-cushion {
-    font-weight: bold;
-    color: #666;
-  }
-
-  ::ng-deep .fc-col-header-cell {
-    background-color: #f8f9fa;
     padding: 1rem !important;
    
   }
@@ -124,4 +128,19 @@
     color: #666;
     padding: 8px;
     text-align: right;
+  }  
+  ::ng-deep .fc-timegrid-slot {
+    height: 100px !important;
+    border: none !important;
+  }
+
+
+  ::ng-deep .fc-timegrid-slot-label-cushion {
+    font-weight: bold;
+    color: #666;
+  }
+
+  ::ng-deep .fc-col-header-cell {
+    background-color: #f8f9fa;
+
   }
