@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { RouterLink } from '@angular/router';
+import { SpoonacularService } from '../shared/spoonacular.service';
 
 @Component({
   selector: 'app-home',
@@ -8,8 +9,9 @@ import { RouterLink } from '@angular/router';
   styleUrl: './home.component.css'
 })
 export class HomeComponent {
-  randomRecipes: any[] = [
-    {title:"Recipe 1", image:"https://upload.wikimedia.org/wikipedia/commons/thumb/3/3f/Placeholder_view_vector.svg/1280px-Placeholder_view_vector.svg.png"},
-    {title:"Recipe 2", image:"https://upload.wikimedia.org/wikipedia/commons/thumb/3/3f/Placeholder_view_vector.svg/1280px-Placeholder_view_vector.svg.png"},
-    {title:"Recipe 3", image:"https://upload.wikimedia.org/wikipedia/commons/thumb/3/3f/Placeholder_view_vector.svg/1280px-Placeholder_view_vector.svg.png"}];
+  randomRecipes: any[] = [];
+
+  constructor(private spoonacularService: SpoonacularService) {
+    this.spoonacularService.getRandomMeals(3).then(response => this.randomRecipes = response.recipes);
+  }
 }
