@@ -45,4 +45,38 @@ export class UsersService {
 
     window.location.reload();
   }
+
+  async assignType(userId: number, userTypeId: number) {
+    console.log("User ID:", userId, "Family ID:", userTypeId);
+    try {
+      await fetch(this.url + `users/${userId}`, {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          user_type_id: userTypeId
+        })
+      });
+    } catch (error) {
+      console.error("Error assigning family to user:", error);
+    }
+  }
+
+  async removeFromFamily(userId: number) {
+    try {
+      await fetch(this.url + `users/${userId}`, {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          family_id: null
+        })
+      });
+    } catch (error) {
+      console.error("Error assigning family to user:", error);
+    }
+  }
+  
 }

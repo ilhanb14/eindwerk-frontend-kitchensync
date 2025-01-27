@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, signal } from '@angular/core';
 import { FamiliesService } from '../shared/families.service';
 import { UsersService } from '../shared/users.service';
 import { FormsModule } from '@angular/forms';
@@ -14,7 +14,8 @@ import { InvitationsService } from '../shared/invitations.service';
 
 export class FamilyComponent {
   userId: number = Number(sessionStorage.getItem('id'));
-  family: any[] | null = null;
+  userType: number = Number(sessionStorage.getItem('user_type_id'));
+  family = signal<any[]>([]);
   loading = true; // Show loading message
   error: string | null = null;
   familyId: number | null = null;
@@ -36,14 +37,12 @@ export class FamilyComponent {
 
     try {
       const user = await this.usersService.getOne(this.userId);
-
       this.familyId = user.family_id
 
       if (this.familyId) {
-        this.family = await this.familiesService.getUsersInFamily(this.familyId);
-        console.log('Fetched family:', this.family)
+        const members  = await this.familiesService.getUsersInFamily(this.familyId);
+        this.family.set(members);
       }
-
     } catch (err) {
       this.error = 'Failed to load family.';
     } finally {
@@ -72,5 +71,30 @@ export class FamilyComponent {
 
     // Display the message
     this.inviteMessage = await response.message;
+  }
+
+  async changeUserType(userId: number, userTypeId: number) {
+    try {
+      const response = await this.usersService.assignType(userId, userTypeId);
+      console.log(response)
+  
+      this.family.update((members) =>
+        members.map((member) =>
+          member.id === userId ? { ...member, user_type: { id: userTypeId, type: userTypeId === 1 ? 'adult' : 'child' } } : member
+      ));
+    } catch (err) {
+      console.error("Error changing user type:", err);
+    }
+  }
+
+  async removeFromFamily (userId: number) {
+    try {
+      const response = await this.usersService.removeFromFamily(userId);
+
+      this.family.update((members) => 
+        members.filter((member) => member.id !== userId));
+    } catch (err) {
+      console.error("Failed to remove member from family:", err);
+    }
   }
 }
