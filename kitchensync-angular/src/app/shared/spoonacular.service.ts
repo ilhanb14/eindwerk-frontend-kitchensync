@@ -85,4 +85,24 @@ export class SpoonacularService {
       console.error("Error fetching spoonacular informationBulk:", error);
     }
   }
+
+  async getRandomMeals(count: number) {
+    try {
+      const response = await fetch(`${this.apiUrl}/recipes/random?number=${count}&includeNutrition=false`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-api-key': this.apiKey
+        }
+      });
+      
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      return await response.json();
+    } catch (error) {
+      console.error("Error fetching random recipes:", error);
+    }
+  }
 }

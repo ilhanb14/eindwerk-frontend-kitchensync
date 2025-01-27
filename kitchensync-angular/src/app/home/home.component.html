@@ -1,9 +1,21 @@
-<div>   
-    <h1>Welcome to Family Meal Planner</h1>
-    <nav>
-      <a routerLink="/user">User Page</a>
-      <a routerLink="/login">Login</a>
-      <a routerLink="/recipe">Recipes</a>
-      <a routerLink="/calendar">Calendar</a>
-    </nav>
-  </div>
+<div class="flex justify-start flex-col items-center mx-4 gap-4">   
+    <img src="/KitchenSyncLogo.png" width="300px">
+    <p class="w-full md:w-1/2 lg:w-1/2 text-center text-lg">
+      Welcome to <strong class="green">KitchenSync</strong> – your go-to solution for stress-free, healthy, and delicious family meals!
+      Whether you’re juggling busy schedules, trying to eat healthier, or just looking for new recipes, we’ve got you covered.
+      Our easy-to-use app helps you plan meals, and discover fun recipes the whole family will love.
+      Spend less time planning and more time enjoying meals together!
+    </p>
+
+    <a routerLink="/recipes" class="bg-green text-xl text-white font-bold p-4 rounded-lg mt-8">Find recipes right now!</a>
+
+    <h3 class="text-xl font-bold my-2">Or try a random suggestion:</h3>
+    <div class="overflow-x-auto flex justify-start flex-row mb-4 w-fit max-w-full min-h-48">
+      @for (recipe of randomRecipes; track $index) {
+        <div class="flex justify-between flex-col items-center text-center rounded-lg shadow-sm border border-gray-200 p-2 ml-3 min-w-[150px] max-w-[200px] h-48">
+          <a [routerLink]="'/recipe/' + recipe.id">{{recipe.title}}</a>
+          <a [routerLink]="'/recipe/' + recipe.id"><img [src]="recipe.image" width="150px"></a>
+      </div>
+      }
+    </div>
+</div>
