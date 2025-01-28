@@ -1,4 +1,4 @@
 /* Added a margin to the top so sticky header doesn't hide anything */
 .content {
-    margin-top: 80px;
+    padding-top: 65px;
 }
