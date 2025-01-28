@@ -50,7 +50,7 @@ export class CalendarComponent implements AfterViewInit {
 
   calendarOptions: CalendarOptions = {
     plugins: [dayGridPlugin, timeGridPlugin, interactionPlugin],
-    initialView: 'dayGridMonth',
+    initialView: 'dayGridWeek',
     headerToolbar: {
       left: 'prev,next today',
       center: 'title',
@@ -123,18 +123,29 @@ export class CalendarComponent implements AfterViewInit {
   async loadPlannedMeals() {
     try {
       const meals = await this.plannedMealsService.getByFamily(this.familyId);
-      if (meals && this.calendarOptions.events) {
-        this.calendarOptions.events = meals.map((meal: any) => ({
-          id: meal.id.toString(),
-          title: meal.meal_name,
-          start: new Date(meal.date),
-          extendedProps: {
-            recipeId: meal.meal_id,
-            servings: meal.servings,
-            mealtimeId: meal.mealtime_id,
-          }
-        }));
-        console.log('loaded meals:', meals);
+      console.log('Loaded meals:', meals);
+      
+      if (meals) {
+        // Validate and log meal data
+        meals.forEach((meal: any) => {
+          console.log('Meal data:', meal);
+        });
+
+        this.calendarOptions.events = meals.map((meal: any) => {
+          const eventDate = new Date(meal.date);
+          console.log('Creating event for meal:', meal);
+          
+          return {
+            id: meal.id.toString(),
+            title: meal.meal_name,
+            start: new Date(meal.date),
+            extendedProps: {
+              recipeId: meal.meal_id,
+              servings: meal.servings,
+              mealtimeId: meal.mealtime_id,
+            }
+          };
+        });
       }
     } catch (error) {
       console.error("Error loading planned meals:", error);
@@ -154,7 +165,7 @@ export class CalendarComponent implements AfterViewInit {
         mealSlot.mealtimeId,
         event.extendedProps.servings
       );
-        event.setStart(this.combineDateAndTime(event.start, mealSlot.time));
+      event.setStart(this.combineDateAndTime(event.start, mealSlot.time));
 
     } catch (error) {
       console.error("Error updating meal:", error);
