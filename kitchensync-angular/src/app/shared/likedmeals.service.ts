@@ -30,7 +30,7 @@ export class LikedMealsService {
   async likeMeal(mealId: number, userId: number) {
     try {
       const likedMeals = await this.getByUser(userId);
-      if (!likedMeals.some((row: any) => row.meal_id == mealId)) {
+      if (!likedMeals.some((row: any) => row.meal_id == mealId)) {  // Only add liked meal if not already liked by this user
         await fetch(this.url + "likedmeals", {
           method: 'POST',
           headers: {
@@ -70,7 +70,7 @@ export class LikedMealsService {
     try {
       const likedMeals: any[] = await this.getByUser(userId);
       let likedMeal = likedMeals.find(row => row.meal_id === mealId && row.user_id === userId);
-      if (likedMeal) {
+      if (likedMeal) {  // Only try to delete if an entry exists in the table with this userId and mealId
         this.deleteLikedMeal(likedMeal.id);
       }
     } catch (error) {
