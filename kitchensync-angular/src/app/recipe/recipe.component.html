@@ -1,29 +1,118 @@
+<div class="max-w-4x1 p-6">
 <!-- First, add a check for if recipe exists to avoid errors -->
 @if (recipe) {
 
-  <h1>{{ recipe.title }}</h1>
 
-    <!-- For images -->
-    <img [src]="recipe.image" [alt]="recipe.title">
-    
-    <div class="recipe-details">
-      <p>Summary:</p>
-      <div [innerHTML]="recipe.summary | safeHtml"></div>
-      <p>Cooking Time: {{ recipe.cookingMinutes }} minutes</p>
-      
-      <!-- For arrays, you can use *ngFor -->
-      <h2>Ingredients:</h2>
+  <div class="grid lg:grid-cols-2 grid-cols-1 rounded-lg shadow-md border p-4 lg:p-6 bg-[#c5f38f] transition-shadow">
+
+    <img class="p-2 rounded-lg" [src]="recipe.image" [alt]="recipe.title">
+    <div class="p-2">
+      <h2 class="text-3xl font-bold mb-4">{{ recipe.title }}</h2>
+      <div class="recipe-details">
+        <div [innerHTML]="recipe.summary | safeHtml"></div>
+      </div>
+    </div>
+  </div>
+  <div class="flex justify-center space-x-10 my-4 text-lg">
+    <!-- Prep Time -->
+    <div class="flex items-center space-x-3">
+      <i class="fa-regular fa-clock text-2xl"></i>
+      <div class="text-start">
+        <div class="text-sm font-medium">Prep Time</div>
+        <div class="text-md">{{ recipe.readyInMinutes }} minutes</div>
+      </div>
+    </div>
+
+    <!-- Servings -->
+    <div class="flex items-center space-x-3">
+      <i class="fa-solid fa-person text-2xl"></i>
+      <div class="text-start">
+        <div class="text-sm font-medium">Servings</div>
+        <div class="text-md">{{ recipe.servings }}</div>
+      </div>
+    </div>
+
+    <div class="flex justify-center space-x-6 my-4">
+      <div class="flex space-x-3">
+        <button id="like-button" class="flex items-center gap-1 px-4 py-2 mx-2 bg-green-600 text-white rounded-md hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors" (click)="like()">Like</button>
+        <button id="unlike-button" class="flex items-center gap-1 px-4 py-2 mx-2 bg-red-600 text-white rounded-md hover:bg-red-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors" (click)="unlike()" style="display: none">Unlike</button>
+      </div>
+      <!-- Wrapper div to avoid triggering hideRequestForm when clicking request button -->
+      <div  clickOutside (clickOutside)="hideRequestForm()">
+        <button id="request-button" class="flex items-center gap-1 px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors" (click)="showRequestForm()">Request</button>
+
+        <div id="request-form" style="display:none">
+          <div class="space-y-1 flex items-center">
+            <span class="font-medium mr-3">Date: </span>
+            <input class="bg-gray-50 border max-w-32 border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" type="date" id="date" [disabled]="!includeDate">
+          </div>
+          <div class="space-y-1 flex items-center mb-1">
+            <span class="font-small mr-3">Include date?</span>
+            <input type="checkbox" id="include-date" [(ngModel)]="includeDate">
+          </div>
+          <div class="space-y-1 flex items-center">
+            <span class="font-medium mr-3">Mealtime: </span>
+            <select id="mealtime-option">
+                <option value="none">None</option>
+                @for (mealtime of mealtimes; track $index) {
+                    <option [value]="mealtime.id">{{mealtime.mealtime}}</option>
+                }
+            </select>
+          </div>
+          <div>
+            <span class="font-medium mr-3">Comment: </span>
+            <textarea class="bg-gray-50 border max-w-32 my-2 border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" id="comment"></textarea>
+          </div>
+          <button class="flex items-center gap-1 px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors" (click)="request()">Make request</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="flex flex-wrap justify-between p-4 lg:p-6">  
+    <div class="w-full md:w-[38%] rounded-lg shadow-md border space-x-2 p-8 transition-shadow">
+      <h3 class="text-2xl font-bold mb-4">Ingredients:</h3>
+      <div class="flex items-center justify-between p-3 mb-2 bg-[#c5f38f] rounded-lg">
+        <div class="font-medium text-lg"> {{ servings }} people </div>
+        <div class="flex items-center space-x-2">
+          <button
+            class="w-10 h-10 flex items-center justify-center bg-white rounded-full hover:bg-[#6ab414] transition-all"
+            type="button"
+            (click)="decreaseServing()"
+          >
+            <i class="fa-solid fa-minus"></i>
+          </button>
+          <button
+            class="w-10 h-10 flex items-center justify-center bg-white rounded-full hover:bg-[#6ab414] transition-all"
+            type="button"
+            (click)="increaseServing()"
+          >
+            <i class="fa-solid fa-plus"></i>
+          </button>
+        </div>
+      </div>
       <ul>
         @for (ingredient of recipe.extendedIngredients; track $index) {
-        <li>
-          {{ ingredient.nameClean }}
+        <li class="flex justify-between">
+          <div class="font-semibold">{{ ingredient.nameClean }}:</div>
+          <div class="">
+            @if (ingredient.measures.metric) {
+              <div> {{ changeAmount(ingredient.measures.metric.amount) }} {{ ingredient.measures.metric.unitLong }} </div>
+            } @else {
+            <div> {{ ingredient.amount }} {{ ingredient.unit }} </div>
+            }
+          </div>
         </li>
         }
-      </ul>
 
-      <h2>Instructions:</h2>
+      </ul>
+    </div>
+
+
+    <div class="w-full md:w-[58%] rounded-lg shadow-md border p-8 bg-[#c5f38f] transition-shadow">
+      <h3 class="text-2xl font-bold mb-4">Instructions:</h3>
       @if (recipe.analyzedInstructions) {
-        <ol>
+        <ol class="list-decimal">
           @for (instruction of recipe.analyzedInstructions[0].steps; track $index) {
           <li>
             {{ instruction.step }}
@@ -31,34 +120,72 @@
           }
         </ol>
       }
-  
-      <!-- For nested objects -->
-      <div class="nutrition">
-        <p>Calories: {{ recipe.nutrition.nutrients[0].amount }}</p>
-        <p>Protein: {{ recipe.nutrition.nutrients[1].amount }}g</p>
-      </div>
-      
     </div>
+  </div>
+    <div>
 
-    <button id="like-button" (click)="like()">Like</button>
-    <button id="unlike-button" (click)="unlike()" style="display: none">Unlike</button>
-
-    <!-- Wrapper div to avoid triggering hideRequestForm when clicking request button -->
-    <div  clickOutside (clickOutside)="hideRequestForm()">
-      <button id="request-button" (click)="showRequestForm()">Request</button>
-
-      <div id="request-form" style="display:none">
-        Date:<input type="date" id="date" [disabled]="!includeDate"><br>
-        Include date? <input type="checkbox" [(ngModel)]="includeDate"><br>
-        Mealtime: <select id="mealtime-option">
-          <option value="none">None</option>
-          @for (mealtime of mealtimes; track $index) {
-            <option [value]="mealtime.id">{{ mealtime.mealtime }}</option>
-          }
-        </select><br>
-        Comment: <textarea id="comment"></textarea><br>
-        <button (click)="request()">Make request</button>
-      </div>
+      <div class="border border-gray-300 shadow-sm rounded-lg overflow-hidden max-w-sm mx-auto mt-16">
+        <table class="w-full text-sm leading-5">
+          <thead class="bg-gray-100">
+            <tr>
+              <th class="py-3 px-4 text-left font-medium text-gray-600">Nutrient</th>
+              <th class="py-3 px-4 text-left font-medium text-gray-600">Amount (100g)</th>
+              <th class="py-3 px-4 text-left font-medium text-gray-600">Amount per serving ({{recipe.nutrition.weightPerServing.amount}}{{recipe.nutrition.weightPerServing.unit}})</th>
+              <th class="py-3 px-4 text-left font-medium text-gray-600">Percentage of daily value (serving)</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="py-3 px-4 text-left font-medium text-gray-600">Calories</td>
+              <td class="py-3 px-4 text-left">{{nutrient100Grams(0)}} {{recipe.nutrition.nutrients[0].unit}}</td>
+              <td class="py-3 px-4 text-left">{{recipe.nutrition.nutrients[0].amount.toFixed(0)}} {{recipe.nutrition.nutrients[0].unit}}</td>
+              <td class="py-3 px-4 text-left">{{recipe.nutrition.nutrients[0].percentOfDailyNeeds}} %</td>
+            </tr>
+            <tr class="bg-gray-50">
+              <td class="py-3 px-4 text-left font-medium text-gray-600">Total Fat</td>
+              <td class="py-3 px-4 text-left">{{nutrient100Grams(1)}} {{recipe.nutrition.nutrients[1].unit}}</td>
+              <td class="py-3 px-4 text-left">{{recipe.nutrition.nutrients[1].amount.toFixed(0)}} {{recipe.nutrition.nutrients[1].unit}}</td>
+              <td class="py-3 px-4 text-left">{{recipe.nutrition.nutrients[1].percentOfDailyNeeds}} %</td>
+            </tr>
+            <tr>
+              <td class="py-3 px-4 text-left font-medium text-gray-600 pl-8">Saturated Fat</td>
+              <td class="py-3 px-4 text-left">{{nutrient100Grams(2)}} {{recipe.nutrition.nutrients[2].unit}}</td>
+              <td class="py-3 px-4 text-left">{{recipe.nutrition.nutrients[2].amount.toFixed(1)}} {{recipe.nutrition.nutrients[2].unit}}</td>
+              <td class="py-3 px-4 text-left">{{recipe.nutrition.nutrients[2].percentOfDailyNeeds}} %</td>
+            </tr>
+            <tr class="bg-gray-50">
+              <td class="py-3 px-4 text-left font-medium text-gray-600">Protein</td>
+              <td class="py-3 px-4 text-left">{{nutrient100Grams(10)}} {{recipe.nutrition.nutrients[10].unit}}</td>
+              <td class="py-3 px-4 text-left">{{recipe.nutrition.nutrients[10].amount.toFixed(1)}} {{recipe.nutrition.nutrients[10].unit}}</td>
+              <td class="py-3 px-4 text-left">{{recipe.nutrition.nutrients[10].percentOfDailyNeeds}} %</td>
+            </tr>
+            <tr>
+              <td class="py-3 px-4 text-left font-medium text-gray-600">Total Carbohydrate</td>
+              <td class="py-3 px-4 text-left">{{nutrient100Grams(3)}} {{recipe.nutrition.nutrients[3].unit}}</td>
+              <td class="py-3 px-4 text-left">{{recipe.nutrition.nutrients[3].amount.toFixed(1)}} {{recipe.nutrition.nutrients[3].unit}}</td>
+              <td class="py-3 px-4 text-left">{{recipe.nutrition.nutrients[3].percentOfDailyNeeds}} %</td>
+            </tr>
+            <tr class="bg-gray-50">
+              <td class="py-3 px-4 text-left font-medium text-gray-600 pl-8">Dietary Fiber</td>
+              <td class="py-3 px-4 text-left">{{nutrient100Grams(12)}} {{recipe.nutrition.nutrients[12].unit}}</td>
+              <td class="py-3 px-4 text-left">{{recipe.nutrition.nutrients[12].amount.toFixed(1)}} {{recipe.nutrition.nutrients[12].unit}}</td>
+              <td class="py-3 px-4 text-left">{{recipe.nutrition.nutrients[12].percentOfDailyNeeds}} %</td>
+            </tr>
+            <tr>
+              <td class="py-3 px-4 text-left font-medium text-gray-600 pl-8">Sugars</td>
+              <td class="py-3 px-4 text-left">{{nutrient100Grams(5)}} {{recipe.nutrition.nutrients[5].unit}}</td>
+              <td class="py-3 px-4 text-left">{{recipe.nutrition.nutrients[5].amount.toFixed(1)}} {{recipe.nutrition.nutrients[5].unit}}</td>
+              <td class="py-3 px-4 text-left">{{recipe.nutrition.nutrients[5].percentOfDailyNeeds}} %</td>
+            </tr>
+            <tr class="bg-gray-50">
+              <td class="py-3 px-4 text-left font-medium text-gray-600">Sodium</td>
+              <td class="py-3 px-4 text-left">{{nutrient100Grams(7)}} {{recipe.nutrition.nutrients[7].unit}}</td>
+              <td class="py-3 px-4 text-left">{{recipe.nutrition.nutrients[7].amount.toFixed(0)}} {{recipe.nutrition.nutrients[7].unit}}</td>
+              <td class="py-3 px-4 text-left">{{recipe.nutrition.nutrients[7].percentOfDailyNeeds}} %</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>    
     </div>
 }
   
@@ -66,4 +193,6 @@
 @if (!recipe) {
     <p>Loading recipe...</p>
 }
+
+</div>
 
