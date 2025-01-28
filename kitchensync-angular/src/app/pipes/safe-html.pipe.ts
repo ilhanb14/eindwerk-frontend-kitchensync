@@ -14,7 +14,7 @@ export class SafeHtmlPipe implements PipeTransform {
     // Replace Spoonacular links with local links
     const modifiedHtml = html.replace(
       /href="https?:\/\/spoonacular\.com\/recipes\/(.*?)-(\d+)"/g, 
-      'href="/recipe/$2"');
+      'href="/recipe/$2" class="text-blue-600"');
    
   return this.sanitizer.bypassSecurityTrustHtml(modifiedHtml);
   } 

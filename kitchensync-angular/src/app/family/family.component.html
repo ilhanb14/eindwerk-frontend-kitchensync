@@ -1,4 +1,4 @@
-<div class="max-w-3xl p-6">    
+<div class="max-w-3xl p-4 lg:p-6">    
   <h2 class="text-3xl font-bold mb-4">Family</h2>  
     <!-- Show loading message -->
     @if (loading) {
@@ -62,7 +62,7 @@
             <h3 class="text-lg font-bold my-4">Add a new member</h3>
             <div class="gap-6">
                 <label for="first_name" class="block mb-2 font-medium text-gray-900 dark:text-white">Email new member</label>
-                <input type="text" id="email" class="bg-gray-50 border max-w-sm border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"  
+                <input type="text" id="email" class="bg-gray-50 border max-w-sm border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"  
                     placeholder="Email" [(ngModel)]="emailInvite" required />
             </div>
             <p class="text-sm text-red-500"> @if (inviteMessage) { {{inviteMessage}} }

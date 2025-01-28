@@ -26,12 +26,17 @@ export interface ExtendedIngredient {
     name: string; // Name of the ingredient
     nameClean: string; // Cleaned name of the ingredient
     amount: number; // Quantity of the ingredient
-    measures?: Measures[]; // Measurement details
+    measures: MeasuresGroup; // Measurement details
     image: string; // URL of the ingredient image
     aisle: string; // Aisle where the ingredient is found
     consistency: string; // Consistency of the ingredient
     meta: string[]; // Additional information about the ingredient
     unit: string; // Measurement unit (e.g., grams, cups)
+}
+
+export interface MeasuresGroup {
+    metric: Measures;
+    us: Measures;
 }
 
 export interface Measures {

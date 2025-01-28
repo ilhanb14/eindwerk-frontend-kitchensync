@@ -1,4 +1,4 @@
-<div class="p-6" id="user-data">
+<div class="p-4 lg:p-6" id="user-data">
     <h3 class="text-2xl font-bold my-4">Personal Info</h3>
     <div class="space-y-1">
         <p><span class="font-medium">Name: </span>{{firstName}} {{lastName}}</p>
@@ -6,7 +6,7 @@
         <p><span class="font-medium">Family: </span>
             @if (familyName) { 
                 {{familyName}}
-            } @else {<a href="/family" class="text-blue-600 dark:text-blue-500 hover:underline">Add a family</a>} </p>
+            } @else {<a href="/family" class="text-blue-600">Add a family</a>} </p>
         <p><span class="font-medium">User Type: </span>
             @if (userType) {
                 {{userType[0].toUpperCase() + userType.substr(1).toLowerCase()}}
@@ -23,7 +23,7 @@
             <li>{{familyMember.first_name}} {{familyMember.last_name}}</li>
         }
     </ul>
-    <a href="/family" class="text-blue-600 dark:text-blue-500 hover:underline">See your family page</a>
+    <a href="/family" class="text-blue-600">See your family page</a>
 
 <app-likedmeals></app-likedmeals>
 <app-preferences></app-preferences>
