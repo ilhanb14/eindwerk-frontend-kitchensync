@@ -49,7 +49,6 @@ export class RecipeComponent implements OnInit {
         this.recipe = recipe;
         console.log(this.recipe);
       this.servings = recipe.servings;
-        console.log(this.servings);
       });
     })
   }
