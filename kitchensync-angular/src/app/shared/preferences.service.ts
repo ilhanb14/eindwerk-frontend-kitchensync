@@ -8,6 +8,10 @@ export class PreferencesService {
 
   constructor() { }
 
+  /**
+   * Get all stored preference options
+   * @returns Array of preferences as {id, name, allergy}
+   */
   async getAllPreferences() {
     try {
       const response = await fetch(this.url + "preferences/");
@@ -18,6 +22,11 @@ export class PreferencesService {
     }
   }
 
+  /**
+   * Get stored preference option by id
+   * @param id 
+   * @returns Preference as {id, name, allergy}
+   */
   async getPreferenceById(id: number) {
     try { 
       const response = await fetch(this.url + "preferences/" + id);
