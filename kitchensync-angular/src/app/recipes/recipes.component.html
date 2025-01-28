@@ -1,8 +1,11 @@
-<div>
+<div class="p-4 lg:p-6">
+    <h2 class="text-3xl font-bold mb-4">Recipes</h2>
+    <div class="flex items-center gap-2">
+      <input class="bg-gray-50 border max-w-80 border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" id="query" type="text" placeholder="Search recipes..." [(ngModel)]="query"/>
+      <button class="flex items-center gap-1 px-4 py-2 bg-gray-400 text-white rounded-md hover:bg-gray-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+        (click)="fetchRecipes()">Load Recipes</button>
+    </div>
 
-    <input id="query" type="text" placeholder="Search recipes..." [(ngModel)]="query"/>
-    <h1>Recipes</h1>
-    <button (click)="fetchRecipes()">Load Recipes</button>
 
 
     <!-- Show loading message -->
@@ -12,32 +15,61 @@
 
     <!-- Display recipes -->
     <div>
-        <ul class="recipe-list">
+      <ul class="recipe-list flex flex-wrap justify-content-between mt-4">
         @for (recipe of smallRecipes.results; track recipe.id) {
+          @if (expandedMeal === recipe.id) {
+            <li 
+              class="recipe-item flex flex-wrap justify-between flex-direction-row w-max p-3 bg-white rounded-lg shadow-sm border border-gray-200 hover:shadow-lg transition-shadow"
+            >
+              <div class="flex justify-between items-center">
+                <div class="">
+  
+  
+                    <h3 class="text-3x1 font-bold my-2">{{ recipe.title }}</h3>
+                    <img 
+                      [src]="recipe.image" 
+                      [alt]="recipe.title"  
+                      (click)="getRecipeDetails(recipe.id)"
+                      class="recipe-image w-40"
+                    >
+                    @if (expandedMeal === recipe.id) {
+                      <div class="recipe-details">
+                        @if (selectedMeal(); as meal) {
+                          <p class="text-lg font-bold my-2">Summary:</p>
+                          <div [innerHTML]="meal.summary | safeHtml"></div>
+                          <a class="text-blue-600 dark:text-blue-500 hover:underline " [routerLink]="['/recipe', recipe.id]">View Recipe</a>
+                        } @else {
+                          <p>Loading recipe details...</p>                      
+                        }
+                      </div>
+                    }
+  
+                </div>
+              </div>
+            </li>
+          } @else {
 
-                <li class="recipe-item">
-                  <h3>{{ recipe.title }}</h3>
+          <li 
+            class="recipe-item flex flex-wrap justify-content-between flex-direction-row lg:w-[23%] md:w-[31%] w-[45%] p-3 m-2 bg-white rounded-lg shadow-sm border border-gray-200 hover:cursor-pointer hover:shadow-lg transition-shadow"
+            (click)="getRecipeDetails(recipe.id)"
+          >
+            <div class="flex justify-between items-center">
+              <div class="">
+
+
+                  <h3 class="text-2x1 font-bold my-2">{{ recipe.title }}</h3>
                   <img 
                     [src]="recipe.image" 
-                    [alt]="recipe.title" 
-                    width="150" 
-                    (click)="getRecipeDetails(recipe.id)"
-                    class="recipe-image"
+                    [alt]="recipe.title"
+                    class="recipe-image w-40"
                   >
-                  @if (expandedMeal === recipe.id) {
-                    <div class="recipe-details">
-                      @if (selectedMeal(); as meal) {
-                        <p><strong>Summary:</strong></p>
-                        <div [innerHTML]="meal.summary | safeHtml"></div>
-                        <a [routerLink]="['/recipe', recipe.id]">View Recipe</a>
-                      } @else {
-                        <p>Loading recipe details...</p>                      
-                      }
-                    </div>
-                  }
-              </li>
+
+              </div>
+            </div>
+          </li>
+          }
         }
-        </ul>
+      </ul>
     </div>
 
     <!-- Fallback if no recipes -->
