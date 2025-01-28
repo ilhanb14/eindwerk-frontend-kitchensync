@@ -8,6 +8,11 @@ export class PlannedMealsService {
 
   constructor() { }
 
+  /**
+   * Get all planned meals for a specific family
+   * @param familyId 
+   * @returns Array of planned meals as {id, meal_id, family_id, date, mealtime_id, servings}
+   */
   async getByFamily(familyId: number) {
     try {
       const response = await fetch(this.url + "plannedmeals/" + familyId);
@@ -17,6 +22,12 @@ export class PlannedMealsService {
     }
   }
 
+  /**
+   * Get all planned meals for a family on a specific date
+   * @param familyId 
+   * @param date 
+   * @returns Array of planned meals as {id, meal_id, family_id, date, mealtime_id, servings}
+   */
   async getByFamilyAndDate(familyId: number, date: Date) {
     try {
       const response = await fetch(this.url + "plannedmeals/" + familyId + "/" + date.toISOString().split('T')[0]);
@@ -26,6 +37,14 @@ export class PlannedMealsService {
     }
   }
 
+  /**
+   * Add a new planned meal
+   * @param mealId 
+   * @param familyId 
+   * @param date 
+   * @param mealtimeId 
+   * @param servings 
+   */
   async post(mealId: number, familyId: number, date: Date, mealtimeId: number, servings: number) {
     try {
       const response = await fetch(this.url + "plannedmeals", {
@@ -36,7 +55,7 @@ export class PlannedMealsService {
         body: JSON.stringify({
           meal_id: mealId,
           family_id: familyId,
-          date: date.toISOString().split('T')[0],
+          date: date.toISOString().split('T')[0], // Convert Date object to string as DD-MM-YYYY
           mealtime_id: mealtimeId,
           servings: servings
         })
@@ -46,6 +65,10 @@ export class PlannedMealsService {
     }
   }
 
+  /**
+   * Delete a planned meal by it's id
+   * @param id Id of entry in PlannedMeals table
+   */
   async deletePlannedMeal(id: number) {
     try {
       fetch(this.url + "plannedmeals/" + id, {
@@ -56,6 +79,15 @@ export class PlannedMealsService {
     }
   }
 
+  /**
+   * Edit existing planned meal
+   * @param id Id of entry in PlannedMeals table
+   * @param mealId 
+   * @param familyId 
+   * @param date 
+   * @param mealtimeId 
+   * @param servings 
+   */
   async put(id: number, mealId: number, familyId: number, date: Date, mealtimeId: number, servings: number) {
     try {
       const response = await fetch(this.url + "plannedmeals/" + id, {
@@ -66,7 +98,7 @@ export class PlannedMealsService {
         body: JSON.stringify({
           meal_id: mealId,
           family_id: familyId,
-          date: date.toISOString().split('T')[0],
+          date: date.toISOString().split('T')[0], // Convert Date object to string as DD-MM-YYYY
           mealtime_id: mealtimeId,
           servings: servings
         })
