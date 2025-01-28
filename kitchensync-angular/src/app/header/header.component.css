@@ -11,12 +11,8 @@ header {
     z-index: 100;
 }
 
-.logo {
-    width: 100px;
-    
-}
-
 .title {
     font-size: 24px;
     font-weight: bold;
+    color: white;
 }

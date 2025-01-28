@@ -5,11 +5,11 @@
             <span class="font-medium mr-3">Date: </span>
             <input class="bg-gray-50 border max-w-32 border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" type="date" id="date" [disabled]="!includeDate">
         </div>
-        <div class="space-y-1 flex items-center mb-1">
-            <span class="font-small mr-3">Include date?</span>
+        <div class="my-2 flex items-center mb-1">
+            <span class="font-small mr-3 mt-1">Include date?</span>
             <input type="checkbox" id="include-date" [(ngModel)]="includeDate">
         </div>
-        <div class="space-y-1 flex items-center">
+        <div class="my-2 flex items-center">
             <span class="font-medium mr-3">Mealtime: </span>
             <select id="mealtime-option">
                 <option value="none">None</option>
@@ -18,11 +18,13 @@
                 }
             </select>
         </div>
-        <div>
+        <div class="my-2">
             <span class="font-medium mr-3">Comment: </span>
-            <textarea class="bg-gray-50 border max-w-32 border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" id="comment"></textarea>
+
+            <textarea class="w-full md:w-96 p-2.5 h-32 mt-2 mb-4 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block " id="comment"></textarea>
+      
         </div>
-        <div>
+        <div class="my-2">
             <span class="font-medium mr-3">Cuisine: </span>
             <select id="cuisine-option">
                 <option value="none">None</option>
@@ -73,15 +75,10 @@
                                     {{request.cuisine}}
                                 </div>  
                             }
-
-                            <div class="text-sm text-gray-500">
-                                <!-- Status: {{invitation.status.status}} -->
-                            </div>
                         </div>
 
                         <div class="w-1/3 self-start">
                             @if(request.meal_title) {
-                                <!-- TOOD Fetch meal data from spoonacular -->
                                 <a class="font-medium" [routerLink]="'/recipe/' + request.meal_id">{{request.meal_title}}<br>
                                 <img [src]="request.meal_image" width="150px"> <br> </a>
                             }
