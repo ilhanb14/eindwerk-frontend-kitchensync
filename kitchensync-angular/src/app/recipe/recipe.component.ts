@@ -80,7 +80,6 @@ export class RecipeComponent implements OnInit {
 
   // Submit request with this meal and form options
   request() {
-    this.hideRequestForm();
     let comment = (document.getElementById('comment')! as HTMLInputElement).value;
     let date:string | null = (document.getElementById('date') as HTMLInputElement)?.value;
     let mealtime:string | null = (document.getElementById('mealtime-option')! as HTMLSelectElement).value;
@@ -102,6 +101,7 @@ export class RecipeComponent implements OnInit {
     console.log(newRequest);
     this.requestsService.makeRequest(newRequest);
     alert("Request made!");
+    this.hideRequestForm();
   }
 
   nutrient100Grams(number: number) {
