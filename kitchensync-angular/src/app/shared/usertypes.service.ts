@@ -8,6 +8,10 @@ export class UserTypesService {
 
   constructor() { }
 
+  /**
+   * Get all user type options
+   * @returns Array of user types as {id, type}
+   */
   async getAll() {
     try {
       const response = await fetch(this.url + "usertypes");
@@ -17,6 +21,11 @@ export class UserTypesService {
     }
   }
 
+  /**
+   * Get a user type by it's id
+   * @param id 
+   * @returns User type as {id, type}
+   */
   async getOne(id: number) {
     try {
       const response = await fetch(this.url + "usertypes/" + id);
