@@ -23,6 +23,7 @@ export class RecipeComponent implements OnInit {
   familyId: number = Number(sessionStorage.getItem('family_id'));
   includeDate: boolean = true;
   mealtimes: any[] = [];
+  servings: number = 0;
 
   constructor(
     private route: ActivatedRoute, 
@@ -47,6 +48,8 @@ export class RecipeComponent implements OnInit {
       this.spoonacularService.getMealById(Number(this.id)).then((recipe) => {
         this.recipe = recipe;
         console.log(this.recipe);
+      this.servings = recipe.servings;
+        console.log(this.servings);
       });
     })
   }
@@ -100,5 +103,30 @@ export class RecipeComponent implements OnInit {
     console.log(newRequest);
     this.requestsService.makeRequest(newRequest);
     alert("Request made!");
+  }
+
+  nutrient100Grams(number: number) {
+    if (this.recipe) {
+      return ((this.recipe.nutrition.nutrients[number].amount/this.recipe.nutrition.weightPerServing.amount) * 100).toFixed(1);
+    }
+    return 0;
+  }
+
+  decreaseServing() { 
+    if (this.servings > 1) {
+      this.servings--;
+    }
+  }
+
+  increaseServing() {
+    this.servings++;
+  }
+
+  changeAmount(amount: number) {
+    const normalServings = this.recipe!.servings;
+    const newAmount = amount * this.servings / normalServings;
+
+    // Format to remove unnecessary decimals
+    return newAmount % 1 === 0 ? newAmount.toFixed(0) : newAmount.toFixed(2).replace(/\.?0+$/, '');
   }
 }
