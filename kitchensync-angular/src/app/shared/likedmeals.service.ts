@@ -8,6 +8,11 @@ export class LikedMealsService {
 
   constructor() { }
 
+  /**
+   * Get all meals liked by a specific user
+   * @param userId
+   * @returns Array of liked meals as {id, meal_id, user_id}
+   */
   async getByUser(userId: number) {
     try {
       const response = await fetch(this.url + "likedmeals/" + userId);
@@ -17,6 +22,11 @@ export class LikedMealsService {
     }
   }
 
+  /**
+   * Add a new meal to a user's liked meals
+   * @param mealId
+   * @param userId 
+   */
   async likeMeal(mealId: number, userId: number) {
     try {
       const likedMeals = await this.getByUser(userId);
@@ -37,6 +47,10 @@ export class LikedMealsService {
     }
   }
 
+  /**
+   * Delete a row from likedMeals table by it's id
+   * @param id Id of the row in likedMeals table
+   */
   async deleteLikedMeal(id: number) {
     try {
       fetch(this.url + "likedmeals/" + id, {
@@ -47,6 +61,11 @@ export class LikedMealsService {
     }
   }
 
+  /**
+   * Delete a meal from a user's liked meals
+   * @param mealId 
+   * @param userId 
+   */
   async deleteLikedMealByData(mealId: number, userId: number) {
     try {
       const likedMeals: any[] = await this.getByUser(userId);
