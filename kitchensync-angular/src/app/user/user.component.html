@@ -4,27 +4,32 @@
         <p><span class="font-medium">Name: </span>{{firstName}} {{lastName}}</p>
         <p><span class="font-medium">Email: </span>{{email}} </p>
         <p><span class="font-medium">Family: </span>
-            @if (familyName) { 
+            @if (familyName) {
                 {{familyName}}
-            } @else {<a href="/family" class="text-blue-600">Add a family</a>} </p>
+            } @else {   <!-- Link to add family if user is not in one -->
+                <a href="/family" class="text-blue-600">Add a family</a>
+            } </p>
         <p><span class="font-medium">User Type: </span>
-            @if (userType) {
+            @if (userType) {    <!-- User type with capitalisation -->
                 {{userType[0].toUpperCase() + userType.substr(1).toLowerCase()}}
-            } @else if (familyName) {
+            } @else if (familyName) {   <!-- User has no type yet -->
                 Assign a user type
-            } @else {
+            } @else {   <!-- User has no family yet -->
                 Add a family
             }
         </p>
     </div>
     <h3 class="text-2xl font-bold my-4">Family Members</h3>
+    <!-- List of family members -->
     <ul id="family space-y-2">
         @for (familyMember of family; track $index) {
             <li>{{familyMember.first_name}} {{familyMember.last_name}}</li>
         }
     </ul>
+    <!-- Link to family page -->
     <a href="/family" class="text-blue-600">See your family page</a>
-
+    
+<!-- Display liked meals and preferences-->
 <app-likedmeals></app-likedmeals>
 <app-preferences></app-preferences>
 

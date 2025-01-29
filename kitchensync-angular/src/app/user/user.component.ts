@@ -25,6 +25,9 @@ export class UserComponent {
     this.fetchUserData();
   }
 
+  /**
+   * Get data for current user
+   */
   async fetchUserData() {
     const userData = await this.usersService.getOne(this.userId);
 
@@ -41,6 +44,10 @@ export class UserComponent {
     }
   }
 
+  /**
+   * Get all members of user's family
+   * @param familyId 
+   */
   async fetchFamily(familyId: number) {
     // Get the correct family name
     this.familiesService.getById(familyId).then(result => this.familyName = result.name);
@@ -48,7 +55,5 @@ export class UserComponent {
     // Get all users in the family
     const response = await this.familiesService.getUsersInFamily(familyId);
     this.family = await response.filter((user: User) => user.id != this.userId);
-    
-    // TODO link to family page
   }
 }
