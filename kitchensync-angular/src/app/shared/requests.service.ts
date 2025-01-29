@@ -8,6 +8,11 @@ export class RequestsService {
 
   constructor() { }
 
+  /**
+   * Get all requests made by members of a specific family
+   * @param familyId
+   * @returns Array of requests as {id, user_id, family_id, date, mealtime_id, comment, meal_id, cuisine}
+   */
   async getByFamily(familyId: number) {
     try {
       const response = await fetch(this.url + "requests/" + familyId);
@@ -17,7 +22,12 @@ export class RequestsService {
     }
   }
 
-  // Make a request for a request, date and mealtime are optional, must include at least one of meal_id, cuisine, or comment
+  /**
+   * Add a new request
+   * @param request Object with {user_id, family_id, date, mealtime_id, comment, meal_id, cuisine}
+   * - date and mealtime are optional
+   * - Should include at least one of comment, meal_id, cuisine
+   */
   async makeRequest(request: any) {
     try {
       fetch(this.url + "requests/", {
@@ -32,11 +42,10 @@ export class RequestsService {
     }
   }
 
-  // Update an existing request
-  async put(id: number, date: Date, familyId: number, userId: number, mealId: number|undefined, cuisine: string|undefined, comment: string|undefined, mealtimeId: number|undefined) {
-    // TODO check that at least one of mealId, cuisine, or comment is not undfined or empty
-  }
-
+  /**
+   * Delete a request by it's id
+   * @param id 
+   */
   async delete(id: number) {
     try {
       fetch(this.url + "requests/" + id, {

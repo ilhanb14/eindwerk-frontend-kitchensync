@@ -18,8 +18,8 @@ export class RequestComponent {
   userId: number = Number(sessionStorage.getItem('id'));
   userTypeId: number = Number(sessionStorage.getItem('user_type_id')); // This restricts some actions such as seeing other users's requests
   familyId: number = Number(sessionStorage.getItem('family_id'));
-  cuisines: any[] = [];
-  mealtimes: any[] = [];
+  cuisines: any[] = []; // Will hold all cuisine options
+  mealtimes: any[] = [];  // Will hold all mealtime options
   includeDate = true; // Used to know if date input should be read
   requestsLoaded = false;
 
@@ -33,26 +33,37 @@ export class RequestComponent {
     this.fetchMealtimes().then(response => this.loadRequests());
   }
 
+  /**
+   * Load existing requests and add extra data (mealtime, user name, meal title and image) needed for display
+   */
   async loadRequests() {
-    console.log("loadRequests called");
     this.requestsLoaded = false;
     await this.fetchRequests();
 
     // Run these functions in parallel and don't continue until all are done
-    // TODO recipe title and image
     await Promise.all([this.addRequestMealtimes(), this.addRequestUserNames(), this.addRequestMealData()]);
 
     this.requestsLoaded = true;
   }
 
+  /**
+   * Fetch all cuisine options and store in this.cuisines
+   */
   async fetchCuisines() {
     this.cuisines = await this.cuisinesService.getAll();
   }
 
+  /**
+   * Fetch all mealtime options and store in this.mealtimes
+   */
   async fetchMealtimes() {
     this.mealtimes = await this.mealtimesService.getAll();
   }
 
+  /**
+   * Get existing requests for this family,
+   * if user is child filter to only their own requests
+   */
   async fetchRequests() {
     this.requests = await this.requestsService.getByFamily(this.familyId);
 
@@ -61,7 +72,9 @@ export class RequestComponent {
     }
   }
 
-  // Add names to requests for display
+  /**
+   * Get user names and assign them to each request for display
+   */
   async addRequestUserNames() {
     let users: any[] = await this.usersService.getAll();
     for (let request of this.requests) {  // For each request, add the full name of the user that made it
@@ -70,13 +83,18 @@ export class RequestComponent {
     }
   }
 
-  // Add mealtimes as strings to requests for display
+  /**
+   * Assign mealtime strings to each request for display
+   */
   async addRequestMealtimes() {
     for (let request of this.requests) {
       request.mealtime = this.mealtimes.find(mealtime => mealtime.id == request.mealtime_id)?.mealtime;
     }
   }
 
+  /**
+   * Get recipe data for requests (title, image) and assign to each request for display
+   */
   async addRequestMealData() {
     // Make list of meal ids to fetch in bulk
     let mealIds: number[] = [];
@@ -96,27 +114,30 @@ export class RequestComponent {
     }
   }
 
+  /**
+   * Make a request from input values
+   */
   makeRequest() {
-    // Check that either comment or cuisine is included (request must include one or both)
     let comment = (document.getElementById('comment')! as HTMLInputElement).value;
     let date:string | null = (document.getElementById('date') as HTMLInputElement)?.value;
     let mealtime:string | null = (document.getElementById('mealtime-option')! as HTMLSelectElement).value;
     let cuisine:string | null = (document.getElementById('cuisine-option')! as HTMLSelectElement).value;
     console.log(date);
 
-    if (!this.includeDate) {
-      date = null;
+    if (!this.includeDate) {  // If checkbox to include date is not checked
+      date = null;  // Do not include date with request
     }
     if (cuisine == "none") {
-      cuisine = null;
+      cuisine = null; // Do not include cuisine
     }
     if (mealtime == "none") {
-      mealtime = null;
+      mealtime = null;  // Do not include mealtime
     }
 
+    // Check that either comment or cuisine is included (request must include one or both)
     if (comment.trim().length === 0 && !cuisine) {
       alert("Your request must have at least a comment or cuisine!");
-      return;
+      return; // Do not make request
     }
 
     let newRequest = {
@@ -128,12 +149,15 @@ export class RequestComponent {
       comment: comment,
       date: date
     }
-    console.log(newRequest);
 
-    this.requestsService.makeRequest(newRequest);
+    this.requestsService.makeRequest(newRequest); // Post request to db
     alert("Request made!")
   }
 
+  /**
+   * Delete a request by it's id, triggered by delete buttons
+   * @param id 
+   */
   deleteRequest(id: number) {
     const request = this.requests.find(request => request.id == id);
     if (this.userTypeId == 1 || this.userId == request.user_id) {

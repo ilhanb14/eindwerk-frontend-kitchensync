@@ -8,6 +8,10 @@ export class CuisinesService {
 
   constructor() { }
 
+  /**
+   * Fetch all stored cuisine options with id and name
+   * @returns Array of cuisines as {id, name}
+   */
   async getAll() {
     try {
       const response = await fetch(this.url + "cuisines/");
