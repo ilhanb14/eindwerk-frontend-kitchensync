@@ -23,11 +23,6 @@ interface SpoonacularRecipe {
   servings?: number;
 }
 
-interface MealSlot {
-  time: string;
-  label: string;
-  mealtimeId: number;
-}
 
 @Component({
   selector: 'app-calendar',
@@ -44,14 +39,6 @@ export class CalendarComponent implements AfterViewInit {
   currentEvents: EventApi[] = [];
   familyId = 4;  // Replace with actual family ID from authentication
 
-
-  // mealSlots: MealSlot[] = [
-  //   { time: '09:00:00', label: 'Breakfast', mealtimeId: 1 },
-  //   { time: '12:00:00', label: 'Lunch', mealtimeId: 2 },
-  //   { time: '15:00:00', label: 'Dinner', mealtimeId: 3 },
-  //   { time: '18:00:00', label: 'Snack', mealtimeId: 4 },
-  // ];
-
   calendarOptions: CalendarOptions = {
     plugins: [dayGridPlugin, timeGridPlugin, interactionPlugin],
     initialView: 'dayGridWeek',
@@ -63,29 +50,6 @@ export class CalendarComponent implements AfterViewInit {
     editable: true,
     droppable: true,
     events: [],
-    // views: {
-    //   timeGridWeek: {
-    //     slotDuration: '03:00:00',
-    //     slotMinTime: '09:00:00',
-    //     slotMaxTime: '21:00:00',
-    //     allDaySlot: false,
-    //     // slotLabelContent: (arg: any) => this.generateSlotLabel(arg),
-    //     dayHeaderFormat: { weekday: 'short', month: 'numeric', day: 'numeric' },
-    //     nowIndicator: true,
-    //   },
-    //   timeGridDay: {
-    //     slotDuration: '03:00:00',
-    //     slotMinTime: '09:00:00',
-    //     slotMaxTime: '21:00:00',
-    //     allDaySlot: false,
-    //     // slotLabelContent: (arg: any) => this.generateSlotLabel(arg),
-    //     dayHeaderFormat: { weekday: 'short', month: 'numeric', day: 'numeric' },
-    //     nowIndicator: true,
-    //   },
-    //   dayGridMonth: {
-    //     allDaySlot: true,
-    //   }
-    // },
     eventClick: this.handleEventClick.bind(this),
     eventsSet: this.handleEvents.bind(this),
     eventReceive: this.handleEventReceive.bind(this),
@@ -176,12 +140,7 @@ export class CalendarComponent implements AfterViewInit {
         console.log('loaded events', this.calendarOptions.events)
         console.log('loaded current events', this.currentEvents)
     
-       
-        // this.calendarOptions = { 
-        //   ...this.calendarOptions,
-        //   events: this.calendarOptions.events
-        // };
-        this.cdr.detectChanges();
+
       }
       console.log('Updated events:', this.calendarOptions.events);
     } catch (error) {
@@ -191,7 +150,6 @@ export class CalendarComponent implements AfterViewInit {
 
   async handleEventDrop(info: any) {
     const event = info.event;
-    // const mealSlot = this.findNearestMealSlot(event.start);
     
     try {
       await this.plannedMealsService.put(
@@ -202,9 +160,6 @@ export class CalendarComponent implements AfterViewInit {
         1,
         event.extendedProps.servings
       );
-      // const newStart = this.combineDateAndTime(event.start);
-      // const newEnnd = new Date(newStart);
-      // newEnnd.setHours(newEnnd.getHours() + 3);
       console.log('Event succesfully Updated:', event);
     } catch (error) {
       console.error("Error updating meal:", error);
@@ -217,11 +172,6 @@ export class CalendarComponent implements AfterViewInit {
     const droppedEvent = info.event;
     
     if (droppedEvent.start) {
-      // const mealSlot = this.findNearestMealSlot(droppedEvent.start);
-
-      // const newStart = this.combineDateAndTime(droppedEvent.start, //mealSlot.time);
-      // const newEnd = new Date(newStart);
-      // newEnd.setHours(newEnd.getHours() + 3);
 
       droppedEvent.setStart(droppedEvent.start);
       droppedEvent.setEnd(droppedEvent.start);
@@ -332,33 +282,6 @@ export class CalendarComponent implements AfterViewInit {
     document.removeEventListener('click', this.handleOutsideClick); // Remove event listener
   }
   
-
-  // private generateSlotLabel(arg: any) {
-  //   console.log('Slot label generated for date:', arg.date, arg.text);
-
-  //   const hour = arg.date.getHours();
-  //   const matchingSlot = this.mealSlots.find(slot => 
-  //     parseInt(slot.time.split(':')[0]) === hour
-  //   );
-  //   if (matchingSlot) {
-  //     return { html: `<div class="meal-slot-label">${matchingSlot.label}</div>` };
-  //   } else {
-  //     return { html: '' };
-  //   }
-  //   this.loadPlannedMeals();
-  // }
-
-  // private findNearestMealSlot(date: Date): MealSlot {
-  //   const hour = date.getHours();
-  //   // const defaultSlot = this.mealSlots[0];
-    
-  //   return this.mealSlots.reduce((prev, curr) => {
-  //     const currHour = parseInt(curr.time.split(':')[0]);
-  //     const prevHour = parseInt(prev.time.split(':')[0]);
-  //     return Math.abs(currHour - hour) < Math.abs(prevHour - hour) ? curr : prev;
-  //   }, defaultSlot);
-  // }
-
   private combineDateAndTime(date: Date, timeString: string): Date {
     const [hours, minutes, seconds] = timeString.split(':').map(Number);
     const newDate = new Date(date);
