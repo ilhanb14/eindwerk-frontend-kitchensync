@@ -3,7 +3,12 @@ import { inject } from '@angular/core';
 import { LoginService } from './shared/login.service';
 
 // the auth guard needs to return a true boolean if the route can be activated
-export const authGuard: CanActivateFn = async (route, state) => {
+/**
+ * Checks whether a user is logged in and can thus access a route
+ * @param state holds the url the user was trying to access
+ * @returns true or false, depending on whether they have the right token
+ */
+export const authGuard: CanActivateFn = async (_, state) => {
   const router = inject(Router);
   const loginService = inject(LoginService);
 
@@ -35,7 +40,6 @@ export const authGuard: CanActivateFn = async (route, state) => {
     };
   }
 
-  
   // Store the attempted URL for redirecting
   localStorage.setItem('redirectUrl', state.url);
   
