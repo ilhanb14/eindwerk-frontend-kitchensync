@@ -1,5 +1,4 @@
 import { Injectable } from '@angular/core';
-import { UsersService } from './users.service';
 
 @Injectable({
   providedIn: 'root'
@@ -7,7 +6,7 @@ import { UsersService } from './users.service';
 export class FamiliesService {
   private url = "http://127.0.0.1:8000/api/"
 
-  constructor(private usersService: UsersService) { }
+  constructor() { }
 
   async getById(id: number) {
     try {
