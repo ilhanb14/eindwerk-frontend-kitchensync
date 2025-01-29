@@ -1,48 +1,50 @@
 <div class="p-4 lg:p-6">
     <div id="input-request">
         <h3 class="text-2xl font-bold my-4">Make a request</h3>
+        <!-- Inputs to make a new request -->
         <div class="space-y-1 flex items-center">
             <span class="font-medium mr-3">Date: </span>
             <input class="bg-gray-50 border max-w-32 border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" type="date" id="date" [disabled]="!includeDate">
         </div>
         <div class="my-2 flex items-center mb-1">
+            <!-- Checkbox for wether or not to include date -->
             <span class="font-small mr-3 mt-1">Include date?</span>
             <input type="checkbox" id="include-date" [(ngModel)]="includeDate">
         </div>
         <div class="my-2 flex items-center">
             <span class="font-medium mr-3">Mealtime: </span>
             <select id="mealtime-option">
-                <option value="none">None</option>
-                @for (mealtime of mealtimes; track $index) {
+                <option value="none">None</option>  <!-- Default option none -->
+                @for (mealtime of mealtimes; track $index) {    <!-- All mealtime options loaded from db -->
                     <option [value]="mealtime.id">{{mealtime.mealtime}}</option>
                 }
             </select>
         </div>
         <div class="my-2">
             <span class="font-medium mr-3">Comment: </span>
-
             <textarea class="w-full md:w-96 p-2.5 h-32 mt-2 mb-4 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block " id="comment"></textarea>
-      
         </div>
         <div class="my-2">
             <span class="font-medium mr-3">Cuisine: </span>
             <select id="cuisine-option">
-                <option value="none">None</option>
-                @for(cuisine of cuisines; track $index) {
+                <option value="none">None</option>  <!-- Default option none -->
+                @for(cuisine of cuisines; track $index) {   <!-- All cuisine options loaded from db -->
                     <option [value]="cuisine.name">{{cuisine.name}}</option>
                 }
             </select>
         </div>
         <button class="flex items-center gap-1 px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors" (click)="makeRequest()">Make request</button>
+        <!-- Link to recipe search to request specific recipe -->
         <div class="mt-2">
             Want to request a specific recipe? <a routerLink="/recipes" class="text-blue-600">Find some here!</a>
         </div>
     </div>
 
+    <!-- All existing requests for this family, if user is child only includes own requests -->
     <div class="max-w-3xl space-y-2" id="existing-requests">
         <h3 class="text-2xl font-bold my-4">Requests</h3>
         <button class="flex items-center gap-1 px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors" (click)="loadRequests()">Refresh</button>
-        @if (requestsLoaded) {
+        @if (requestsLoaded) {  <!-- Wait until loaded to show -->
         <ul class="space-y-2">
             @for (request of requests; track $index) {
                 <li class="bg-white rounded-lg shadow-sm border border-gray-200 p-4 hover:shadow-md transition-shadow">
@@ -51,6 +53,7 @@
                             <div class="font-medium">
                                 <span class="text-gray-600">Request by:</span> {{ request.user_name }}
                             </div>
+                            <!-- Only show these values if they were included in the request -->
                             @if (request.date) {
                                 <div>
                                     <span class="text-gray-600">Date:</span>
