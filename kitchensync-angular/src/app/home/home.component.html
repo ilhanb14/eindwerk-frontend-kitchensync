@@ -12,7 +12,7 @@
     <h3 class="text-xl font-bold my-2">Or try a random suggestion:</h3>
     <div class="overflow-x-auto flex justify-start flex-row mb-4 w-fit max-w-full min-h-48">
       @for (recipe of randomRecipes; track $index) {
-        <div class="flex justify-between flex-col items-center text-center rounded-lg shadow-sm border border-gray-200 p-2 ml-3 min-w-[150px] max-w-[200px] h-48">
+        <div class="recipe-item flex flex-wrap justify-between items-center flex-direction-row lg:w-[23%] md:w-[31%] w-[45%] p-3 m-2 font-medium bg-logo-pastel dark:bg-logo-pastel rounded-lg shadow-lg border border-border hover:bg-logo hover:cursor-pointer hover:shadow-xl transition-shadow">
           <a [routerLink]="'/recipe/' + recipe.id">{{recipe.title}}</a>
           <a [routerLink]="'/recipe/' + recipe.id"><img [src]="recipe.image" width="150px"></a>
       </div>
