@@ -6,7 +6,7 @@ import { Injectable } from '@angular/core';
 })
 export class SpoonacularService {
   private apiUrl = 'https://api.spoonacular.com/';
-  private apiKey = 'ebc3c44a221640ca9eeef49f77ce5e1d';
+  private apiKey = '8a200140dea34316bf1b269f31c2b785';
 
   constructor() { }
 
