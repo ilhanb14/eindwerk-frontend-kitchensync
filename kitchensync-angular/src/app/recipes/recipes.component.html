@@ -40,7 +40,7 @@
                   @if (selectedMeal(); as meal) {
                     <p class="text-lg font-bold my-2">Summary:</p>
                     <div [innerHTML]="meal.summary | safeHtml"></div>
-                    <a class="flex items-center gap-1 px-4 py-2 bg-white text-link rounded-md hover:bg-logo disabled:opacity-50 disabled:cursor-not-allowed transition-colors" [routerLink]="['/recipe', recipe.id]">View Recipe</a>
+                    <a class="flex items-center gap-1 px-4 py-2 max-w-32 mt-2 font-medium bg-primary text-secondary rounded-md hover:bg-logo disabled:opacity-50 disabled:cursor-not-allowed transition-colors" [routerLink]="['/recipe', recipe.id]">View Recipe</a>
                   }
                 </div>                
               </div>
