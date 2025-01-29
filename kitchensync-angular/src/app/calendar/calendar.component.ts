@@ -11,6 +11,8 @@ import timeGridPlugin from '@fullcalendar/timegrid';
 import interactionPlugin, { Draggable } from '@fullcalendar/interaction';
 import { SpoonacularService } from '../shared/spoonacular.service';
 import { PlannedMealsService } from '../shared/plannedmeals.service';
+import { ChangeDetectorRef } from '@angular/core';
+
 
 
 interface SpoonacularRecipe {
@@ -89,7 +91,8 @@ export class CalendarComponent implements AfterViewInit {
 
   constructor(
     private spoonacularService: SpoonacularService,
-    private plannedMealsService: PlannedMealsService
+    private plannedMealsService: PlannedMealsService,
+    private cdr: ChangeDetectorRef
   ) {}
 
   ngAfterViewInit() {
@@ -133,20 +136,32 @@ export class CalendarComponent implements AfterViewInit {
 
         this.calendarOptions.events = meals.map((meal: any) => {
           const eventDate = new Date(meal.date);
+          const eventEnd = new Date(new Date(eventDate).getTime() + 3 * 60 * 60 * 1000);
+          eventEnd.setHours(eventEnd.getHours() + 3);
           console.log('Creating event for meal:', meal);
           
           return {
             id: meal.id.toString(),
             title: meal.meal_name,
-            start: new Date(meal.date),
+            start: eventDate,
+            duration: '03:00:00',
+            end: eventEnd,
+            slot: meal.mealtime_id,
+            allDay: false,
             extendedProps: {
               recipeId: meal.meal_id,
               servings: meal.servings,
-              mealtimeId: meal.mealtime_id,
+
             }
           };
         });
+        this.calendarOptions = { 
+          ...this.calendarOptions,
+          events: this.calendarOptions.events
+        };
+        this.cdr.detectChanges();
       }
+      console.log('Updated events:', this.calendarOptions.events);
     } catch (error) {
       console.error("Error loading planned meals:", error);
     }
@@ -157,7 +172,7 @@ export class CalendarComponent implements AfterViewInit {
     const mealSlot = this.findNearestMealSlot(event.start);
     
     try {
-      const response = await this.plannedMealsService.put(
+      await this.plannedMealsService.put(
         parseInt(event.id),
         event.extendedProps.recipeId,
         this.familyId,
@@ -165,8 +180,10 @@ export class CalendarComponent implements AfterViewInit {
         mealSlot.mealtimeId,
         event.extendedProps.servings
       );
-      event.setStart(this.combineDateAndTime(event.start, mealSlot.time));
-
+      const newStart = this.combineDateAndTime(event.start, mealSlot.time);
+      const newEnnd = new Date(newStart);
+      newEnnd.setHours(newEnnd.getHours() + 3);
+      console.log('Event succesfully Updated:', event);
     } catch (error) {
       console.error("Error updating meal:", error);
       info.revert();
@@ -178,7 +195,13 @@ export class CalendarComponent implements AfterViewInit {
     
     if (droppedEvent.start) {
       const mealSlot = this.findNearestMealSlot(droppedEvent.start);
-      droppedEvent.setStart(this.combineDateAndTime(droppedEvent.start, mealSlot.time));
+
+      const newStart = this.combineDateAndTime(droppedEvent.start, mealSlot.time);
+      const newEnd = new Date(newStart);
+      newEnd.setHours(newEnd.getHours() + 3);
+
+      droppedEvent.setStart(newStart);
+      droppedEvent.setEnd(newEnd);
   
       try {
         await this.plannedMealsService.post(
@@ -186,9 +209,10 @@ export class CalendarComponent implements AfterViewInit {
           this.familyId,
           droppedEvent.start,
           mealSlot.mealtimeId,
-          droppedEvent.extendedProps.servings || 4
+          droppedEvent.title,
         );
-        this.loadPlannedMeals();
+        console.log('Event successfully recieved:', droppedEvent);
+        await this.loadPlannedMeals();
       } catch (error) {
         console.error("Error saving meal plan:", error);
         droppedEvent.remove();
@@ -209,6 +233,8 @@ export class CalendarComponent implements AfterViewInit {
   }
 
   private generateSlotLabel(arg: any) {
+    console.log('Slot label generated for date:', arg.date, arg.text);
+
     const hour = arg.date.getHours();
     const matchingSlot = this.mealSlots.find(slot => 
       parseInt(slot.time.split(':')[0]) === hour
@@ -260,6 +286,25 @@ export class CalendarComponent implements AfterViewInit {
     }
   }
 
+  // private generateEventContent(args: any): any {
+  //   const { event } = args;
+  //   const { title, extendedProps } = event;
+  //   const { image, readyInMinutes, servings } = extendedProps;
+  
+  //   return {
+  //     html: `
+  //       <div class="event-container">
+  //         <div class="event-image" style="background-image: url('${image}');"></div>
+  //         <div class="event-details">
+  //           <h3>${title}</h3>
+  //           <p>Ready in: ${readyInMinutes} mins</p>
+  //           <p>Servings: ${servings}</p>
+  //         </div>
+  //       </div>
+  //     `
+  //   };
+  // }
+
   stringify(recipe: SpoonacularRecipe): string {
     return JSON.stringify(recipe);
   }
@@ -267,4 +312,5 @@ export class CalendarComponent implements AfterViewInit {
   handleEvents(events: EventApi[]) {
     this.currentEvents = events;
   }
+
 }
