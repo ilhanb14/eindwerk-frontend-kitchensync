@@ -1,24 +1,32 @@
-<div class="layout">
+<div class="flex flex-col lg:flex-row gap-6 p-6">
   <!-- Calendar Section -->
-  <div class="calendar">
+  <div class="flex-1 bg-white p-6 rounded-lg shadow-md">
     <full-calendar [options]="calendarOptions"></full-calendar>
   </div>
 
-  <!-- Recipes Section -->
-  <div class="recipes" #recipeContainer>
-    <h3>Recipes</h3>
-    <div class="search">
-      <input #query type="text" placeholder="Search for recipes" />
-      <button (click)="searchRecipes(query.value)">Search</button>
-    </div>
-    <div
-      *ngFor="let recipe of recipes"
-      class="recipe"
-      [attr.data-recipe]="stringify(recipe)">  <!-- Add this line -->
-      {{ recipe.title }}
-      <img [src]="recipe.image" alt="{{ recipe.title }}" />
-      <p>{{ recipe.title }}</p>
+  <!-- Event Details Modal (Hidden by Default) -->
+  <div 
+    #eventDetails 
+    class="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 
+           bg-white p-6 rounded-lg shadow-lg text-center w-80 z-50 hidden"
+    id="event-details">
+    
+    <h3 id="recipe-title" class="font-bold text-lg mb-2"></h3>
+    <img id="recipe-image" alt="Recipe Image" class="w-full h-auto rounded-md mb-4 border">
+
+    <div class="flex justify-between gap-3">
+      <button id="delete-button" 
+              class="flex-1 bg-red-500 text-white font-semibold py-2 px-4 rounded-md hover:bg-red-600 transition">
+        Delete
+      </button>
+      <button id="view-recipe-button"
+              class="flex-1 bg-blue-500 text-white font-semibold py-2 px-4 rounded-md hover:bg-blue-600 transition">
+        View Recipe
+      </button>
+      <button (click)="hideEventDetails()"
+              class="flex-1 bg-gray-500 text-white font-semibold py-2 px-4 rounded-md hover:bg-gray-600 transition">
+        Close
+      </button>
     </div>
   </div>
 </div>
-

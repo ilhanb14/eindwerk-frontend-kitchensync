@@ -1,10 +1,8 @@
-
-import { Component, AfterViewInit, ElementRef, ViewChild } from '@angular/core';
+import { Component, AfterViewInit, ElementRef, ViewChild, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FullCalendarModule } from '@fullcalendar/angular';
 import {
   CalendarOptions,
-  DateSelectArg,
   EventClickArg,
   EventApi,
 } from '@fullcalendar/core';
@@ -12,7 +10,10 @@ import dayGridPlugin from '@fullcalendar/daygrid';
 import timeGridPlugin from '@fullcalendar/timegrid';
 import interactionPlugin, { Draggable } from '@fullcalendar/interaction';
 import { SpoonacularService } from '../shared/spoonacular.service';
-import { Title } from '@angular/platform-browser';
+import { PlannedMealsService } from '../shared/plannedmeals.service';
+import { ChangeDetectorRef } from '@angular/core';
+import { Router } from '@angular/router'
+
 
 interface SpoonacularRecipe {
   id: number;
@@ -22,10 +23,6 @@ interface SpoonacularRecipe {
   servings?: number;
 }
 
-interface MealSlot {
-  time: string;
-  label: string;
-}
 
 @Component({
   selector: 'app-calendar',
@@ -36,67 +33,42 @@ interface MealSlot {
 })
 export class CalendarComponent implements AfterViewInit {
   @ViewChild('recipeContainer', { static: false }) recipeContainer!: ElementRef;
+  @ViewChild('eventDetails', { static: false }) eventDetails!: ElementRef;
 
   recipes: SpoonacularRecipe[] = [];
   currentEvents: EventApi[] = [];
-
-  mealSlots: MealSlot[] = [
-    { time: '06:00:00', label: 'Breakfast' },
-    { time: '12:00:00', label: 'Lunch' },
-    { time: '18:00:00', label: 'Dinner' }
-  ];
+  familyId = 4;  // Replace with actual family ID from authentication
 
   calendarOptions: CalendarOptions = {
     plugins: [dayGridPlugin, timeGridPlugin, interactionPlugin],
-    initialView: 'dayGridMonth',
+    initialView: 'dayGridWeek',
     headerToolbar: {
       left: 'prev,next today',
       center: 'title',
-      right: 'dayGridMonth,timeGridWeek,timeGridDay',
+      right: 'dayGridMonth,dayGridWeek,dayGridDay',
     },
     editable: true,
     droppable: true,
-    views: {
-      timeGridWeek: {
-        slotDuration: '03:00:00',
-        slotMinTime: '06:00:00',
-        slotMaxTime: '21:00:00',
-        allDaySlot: false,
-        slotLabelContent: (arg: any) => this.generateSlotLabel(arg),
-        dayHeaderFormat: { weekday: 'short', month: 'numeric', day: 'numeric' },
-        nowIndicator: true,
-      },
-      timeGridDay: {
-        slotDuration: '03:00:00',
-        slotMinTime: '06:00:00',
-        slotMaxTime: '21:00:00',
-        allDaySlot: false,
-        slotLabelContent: (arg: any) => this.generateSlotLabel(arg),
-        dayHeaderFormat: { weekday: 'short', month: 'numeric', day: 'numeric' },
-        nowIndicator: true,
-      },
-      dayGridMonth: {
-        allDaySlot: true,
-      }
-    },
+    events: [],
     eventClick: this.handleEventClick.bind(this),
     eventsSet: this.handleEvents.bind(this),
     eventReceive: this.handleEventReceive.bind(this),
-    eventDrop: (info: any) => {
-      const currentView = info.view.type;
-      if (currentView === 'timeGridWeek' || currentView === 'timeGridDay') {
-        const eventDate = info.event.start;
-        if (eventDate) {
-          const nearestSlot = this.findNearestMealSlot(eventDate);
-          info.event.setStart(this.combineDateAndTime(eventDate, nearestSlot.time));
-        }
-      }
-    },
+    eventDrop: this.handleEventDrop.bind(this),
   };
 
-  constructor(private spoonacularService: SpoonacularService) {}
+  constructor(
+    private spoonacularService: SpoonacularService,
+    private plannedMealsService: PlannedMealsService,
+    private cdr: ChangeDetectorRef,
+    private router: Router
+  ) {}
 
   ngAfterViewInit() {
+    this.loadPlannedMeals();
+    this.initializeDraggable();
+  }
+
+  private initializeDraggable() {
     new Draggable(this.recipeContainer.nativeElement, {
       itemSelector: '.recipe',
       eventData: (el) => {
@@ -119,50 +91,202 @@ export class CalendarComponent implements AfterViewInit {
     });
   }
 
-  private generateSlotLabel(arg: any) {
-    const hour = arg.date.getHours();
-    const matchingSlot = this.mealSlots.find(slot => 
-      parseInt(slot.time.split(':')[0]) === hour
-    );
-    if (matchingSlot) {
-      return { html: `<div class="meal-slot-label">${matchingSlot.label}</div>` };
-    } else {
-      return { html: '' };
+  async loadPlannedMeals() {
+    try {
+      const plannedMeals = await this.plannedMealsService.getByFamily(this.familyId);
+      const recipeIds = plannedMeals.map((meal: any) => meal.meal_id);
+      const meals = await this.spoonacularService.getMealsById(recipeIds);
+      
+      console.log('Loaded meals:', meals);
+      
+      if (meals) {
+        // Validate and log meal data
+        meals.forEach((meal: any) => {
+          console.log('Meal data:', meal);
+        });
+
+        this.calendarOptions.events = [];
+        
+        for (let meal of meals) {
+          const plannedMeal = plannedMeals.find((plannedMeal: any) => plannedMeal.meal_id == meal.id);
+          if (plannedMeal) { 
+            const eventDate = new Date(plannedMeal.date);
+            const eventEnd = new Date(new Date(eventDate).getTime() + 3 * 60 * 60 * 1000);
+            eventEnd.setHours(eventEnd.getHours() + 3);
+            console.log('Creating event for meal:', meal);
+        
+            const newEvent = {
+              
+                id: plannedMeal.id.toString(),
+                title: meal.title,
+                duration: '03:00:00',
+                allDay: false,
+                start: eventDate,
+                end: eventEnd,
+                slot: plannedMeal.mealtime_id,
+                  extendedProps: {
+                    recipeId: plannedMeal.meal_id,
+                    servings: plannedMeal.servings,
+                    image: meal.image
+      
+                   }
+                
+            }
+            this.calendarOptions.events.push(newEvent)
+          
+          }
+        
+        }
+        console.log('loaded events', this.calendarOptions.events)
+        console.log('loaded current events', this.currentEvents)
+    
+
+      }
+      console.log('Updated events:', this.calendarOptions.events);
+    } catch (error) {
+      console.error("Error loading planned meals:", error);
     }
   }
 
-  private findNearestMealSlot(date: Date): MealSlot {
-    const hour = date.getHours();
-    const defaultSlot = this.mealSlots[0];
+  async handleEventDrop(info: any) {
+    const event = info.event;
     
-    return this.mealSlots.reduce((prev, curr) => {
-      const currHour = parseInt(curr.time.split(':')[0]);
-      const prevHour = parseInt(prev.time.split(':')[0]);
-      return Math.abs(currHour - hour) < Math.abs(prevHour - hour) ? curr : prev;
-    }, defaultSlot);
+    try {
+      await this.plannedMealsService.put(
+        parseInt(event.id),
+        event.extendedProps.recipeId,
+        this.familyId,
+        event.start,
+        1,
+        event.extendedProps.servings
+      );
+      console.log('Event succesfully Updated:', event);
+    } catch (error) {
+      console.error("Error updating meal:", error);
+      info.revert();
+    }
+
   }
 
+  async handleEventReceive(info: any) {
+    const droppedEvent = info.event;
+    
+    if (droppedEvent.start) {
+
+      droppedEvent.setStart(droppedEvent.start);
+      droppedEvent.setEnd(droppedEvent.start);
+  
+      try {
+        await this.plannedMealsService.post(
+          droppedEvent.extendedProps.recipeId,
+          this.familyId,
+          droppedEvent.start,
+          1,
+          1
+        );
+
+       const plannedMeal = this.recipes.find(recipe => recipe.id == droppedEvent.extendedProps.recipeId);
+
+
+       
+       if (plannedMeal) {
+        const newEvent = {
+          
+            id: plannedMeal.id.toString(),
+            title: plannedMeal.title,
+
+            allDay: false,
+            start: droppedEvent.start,
+            end: droppedEvent.end,
+              extendedProps: {
+                recipeId: plannedMeal.id,
+                servings: plannedMeal.servings,
+  
+               }
+            
+        };
+        (this.calendarOptions.events! as any[]).push(newEvent);
+        this.cdr.detectChanges();
+        console.log(this.calendarOptions.events)
+        }
+      
+        console.log('Event successfully recieved:', droppedEvent);
+      } catch (error) {
+        console.error("Error saving meal plan:", error);
+        droppedEvent.remove();
+      }
+    }
+  }
+
+  async handleEventClick(clickInfo: EventClickArg) {
+    const event = clickInfo.event;
+    const eventId = parseInt(event.id);
+    const recipeId = event.extendedProps?.['recipeId'];
+    const recipeTitle = event.title;
+    let recipeImageUrl = event.extendedProps?.['image'];
+
+    console.log('recipe image url:', recipeImageUrl)
+
+    if (!recipeImageUrl) {
+      console.warn("Recipe image URL not found!");
+    }
+
+    if (!this.eventDetails) {
+      console.error("Event details container not found!");
+      return;
+    }
+  
+    const eventDetailsEl = document.getElementById('event-details')!;
+    eventDetailsEl.style.display = 'block';
+  
+    // Find elements inside event details
+    const titleEl = document.getElementById('recipe-title')!;
+    const imageEl = document.getElementById('recipe-image')!;
+    const deleteButton = document.getElementById('delete-button')!;
+    const viewRecipeButton = document.getElementById('view-recipe-button')!;
+    imageEl.setAttribute('src', recipeImageUrl);
+    titleEl.textContent = recipeTitle;
+
+
+    deleteButton.addEventListener('click', async () => {
+      const confirmed = confirm(`Are you sure you want to delete "${recipeTitle}"?`);
+      if (confirmed) {
+        try {
+          await this.plannedMealsService.deletePlannedMeal(eventId);
+          event.remove();
+          this.hideEventDetails();
+        } catch (error) {
+          console.error("Error deleting meal:", error);
+        }
+      }
+    });
+  
+    viewRecipeButton.addEventListener('click', () => {
+      this.router.navigate(['/recipe', recipeId]);
+    });
+      // document.addEventListener('click', this.handleOutsideClick);
+    
+  
+  }
+
+  handleOutsideClick = (event: MouseEvent) => {
+    if (this.eventDetails && !this.eventDetails.nativeElement.contains(event.target as Node)) {
+      this.hideEventDetails();
+    }
+  };
+
+  hideEventDetails() {
+    if (this.eventDetails) {
+      this.eventDetails.nativeElement.style.display = 'none';
+    }
+    document.removeEventListener('click', this.handleOutsideClick); // Remove event listener
+  }
+  
   private combineDateAndTime(date: Date, timeString: string): Date {
     const [hours, minutes, seconds] = timeString.split(':').map(Number);
     const newDate = new Date(date);
     newDate.setHours(hours, minutes, seconds);
     return newDate;
-  }
-
-  handleEventReceive(info: any) {
-    const currentView = info.view.type;
-    const droppedEvent = info.event;
-    
-    if ((currentView === 'timeGridWeek' || currentView === 'timeGridDay') && droppedEvent.start) {
-      const nearestSlot = this.findNearestMealSlot(droppedEvent.start);
-      droppedEvent.setStart(this.combineDateAndTime(droppedEvent.start, nearestSlot.time));
-    }
-    
-    if (droppedEvent.extendedProps?.recipeId) {
-      droppedEvent.setProp('title', droppedEvent.title);
-    } else {
-      console.error('no data found for dropped event');
-    }
   }
 
   async searchRecipes(query: string) {
@@ -174,7 +298,7 @@ export class CalendarComponent implements AfterViewInit {
         number: 10,
         addRecipeInformation: 'true',
       });
-
+console.log(response);
       this.recipes = response.results.map((recipe: any) => ({
         id: recipe.id,
         title: recipe.title,
@@ -182,14 +306,9 @@ export class CalendarComponent implements AfterViewInit {
         readyInMinutes: recipe.readyInMinutes,
         servings: recipe.servings,
       }));
+    
     } catch (error) {
       console.error('Error searching recipes:', error);
-    }
-  }
-
-  handleEventClick(clickInfo: EventClickArg) {
-    if (confirm(`Are you sure you want to delete the event '${clickInfo.event.title}'?`)) {
-      clickInfo.event.remove();
     }
   }
 
@@ -200,4 +319,5 @@ export class CalendarComponent implements AfterViewInit {
   handleEvents(events: EventApi[]) {
     this.currentEvents = events;
   }
+
 }
