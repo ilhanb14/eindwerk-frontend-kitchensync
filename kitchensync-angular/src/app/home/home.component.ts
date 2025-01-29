@@ -12,6 +12,7 @@ export class HomeComponent {
   randomRecipes: any[] = [];
 
   constructor(private spoonacularService: SpoonacularService) {
+    // Get 3 random meals from spoonacular to be displayed as suggestions
     this.spoonacularService.getRandomMeals(3).then(response => this.randomRecipes = response.recipes);
   }
 }

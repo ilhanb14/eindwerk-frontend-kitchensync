@@ -8,6 +8,10 @@ export class MealtimesService {
 
   constructor() { }
 
+  /**
+   * Get all stored mealtime options
+   * @returns Array of mealtimes as {id, mealtime}
+   */
   async getAll() {
     try {
       const response = await fetch(this.url + "mealtimes/");
@@ -17,6 +21,11 @@ export class MealtimesService {
     }
   }
 
+  /**
+   * Get a specific mealtime by id
+   * @param id 
+   * @returns Mealtime as {id, mealtime}
+   */
   async getOne(id: number) {
     try {
       const response = await fetch(this.url + "mealtimes/" + id);
