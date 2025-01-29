@@ -93,10 +93,6 @@ export interface Nutrition {
     unit: string;
   }
 
-export interface RecipeResponse {
-    "results": Recipe[]
-}
-
 export interface Instructions {
     name: string;
     steps: Step[];
