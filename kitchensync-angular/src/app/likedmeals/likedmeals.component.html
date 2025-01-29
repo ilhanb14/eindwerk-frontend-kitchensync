@@ -1,9 +1,12 @@
 @if (likedMeals) {
     <h3 class="text-2xl font-bold my-4">Liked Meals</h3>
+    <!-- Display all liked meals horizontally, scrollable on smaller screens -->
     <div id="liked-meals" class="overflow-x-auto flex justify-start flex-row">
         @for (meal of likedMeals; track $index) {
             <div class="liked-meal" [id]="'like-'+meal.id">
+                <!-- Title and image in inner div so they can be justify-between but still be closer to the button -->
                 <div class="flex justify-between flex-col h-full items-center text-center rounded-lg shadow-sm border border-gray-200 p-2">
+                    <!-- Both title and image link to recipe page -->
                     <a [routerLink]="'/recipe/' + meal.id">{{meal.title}} </a>
                     <a [routerLink]="'/recipe/' + meal.id"><img [src]="meal.image" width="150px"></a>
                 </div>
