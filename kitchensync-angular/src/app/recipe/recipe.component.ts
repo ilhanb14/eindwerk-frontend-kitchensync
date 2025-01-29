@@ -22,6 +22,7 @@ export class RecipeComponent implements OnInit {
   recipe: Recipe | undefined;
   userId: number = Number(sessionStorage.getItem('id'));
   familyId: number = Number(sessionStorage.getItem('family_id'));
+  userTypeId: number = Number(sessionStorage.getItem('user_type_id'));
   includeDate: boolean = true;
   mealtimes: any[] = [];
   servings: number = 0;
