@@ -8,6 +8,11 @@ export class FamiliesService {
 
   constructor() { }
 
+  /**
+   * Get a family by its id
+   * @param id family id
+   * @returns returns the family
+   */
   async getById(id: number) {
     try {
       const response = await fetch(this.url + "families/" + id);
@@ -17,6 +22,11 @@ export class FamiliesService {
     }
   }
 
+  /**
+   * Add a family with a name
+   * @param familyName 
+   * @returns id of the new family
+   */
   async addFamily(familyName: string) {
     try {
       const response = await fetch(this.url + "families", {
@@ -38,6 +48,11 @@ export class FamiliesService {
     }
   }
 
+  /**
+   * Change the name of the family
+   * @param familyId 
+   * @param familyName new family name
+   */
   async updateFamily(familyId: number, familyName: string) {
     try {
       await fetch(this.url + "families/" + familyId, {
@@ -54,6 +69,10 @@ export class FamiliesService {
     }
   }
 
+  /**
+   * Delete a family
+   * @param familyId id of the family that should be deleted
+   */
   async deleteFamily(familyId: number) {
     try {
       await fetch(this.url + "families/" + familyId, {
@@ -64,6 +83,11 @@ export class FamiliesService {
     }
   }
 
+  /**
+   * Get all the users in a family
+   * @param familyId id of the family where you want the users from
+   * @returns Users with the requested family id
+   */
   async getUsersInFamily(familyId: number) {
     try {
       const response = await fetch(`${this.url}users/family/${familyId}`);

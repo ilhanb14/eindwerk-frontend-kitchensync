@@ -8,6 +8,10 @@ export class UsersService {
 
   constructor() { }
 
+  /**
+   * Get all users
+   * @returns an array of all users
+   */
   async getAll() {
     try {
       const response = await fetch(this.url + "users/");
@@ -17,6 +21,11 @@ export class UsersService {
     }
   }
 
+  /**
+   * Get one specific user based on id
+   * @param userId id of the user you want more information for
+   * @returns information on the specific user
+   */
   async getOne(userId: number) {
     try {
       const response = await fetch(this.url + "users/" + userId);
@@ -26,6 +35,10 @@ export class UsersService {
     }
   }
 
+  /**
+   * Change the family of the logged in user
+   * @param familyId id of the family you want to assign
+   */
   async assignFamily(familyId: number) {
     const userId = sessionStorage.getItem('id');
     console.log("User ID:", userId, "Family ID:", familyId);
@@ -43,9 +56,15 @@ export class UsersService {
       console.error("Error assigning family to user:", error);
     }
 
+    // reload the page to show the members of the enw family
     window.location.reload();
   }
 
+  /**
+   * Cha,nge the user type of someone
+   * @param userId the user you want to change the type of
+   * @param userTypeId the id of the user type you want to assign
+   */
   async assignType(userId: number, userTypeId: number) {
     console.log("User ID:", userId, "Family ID:", userTypeId);
     try {
@@ -63,6 +82,10 @@ export class UsersService {
     }
   }
 
+  /**
+   * Remove a user from the family of the current user
+   * @param userId the id of the user you want to remove from the family
+   */
   async removeFromFamily(userId: number) {
     try {
       await fetch(this.url + `users/${userId}`, {
@@ -78,5 +101,4 @@ export class UsersService {
       console.error("Error assigning family to user:", error);
     }
   }
-  
 }
