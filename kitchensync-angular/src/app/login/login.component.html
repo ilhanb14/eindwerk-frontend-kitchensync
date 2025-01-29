@@ -5,22 +5,19 @@
 <div class="login">
 <div class="container">
   <input type="checkbox" id="flip">
+
+  <!-- Image that flips -->
   <div class="cover">
     <div class="front">
-      <!-- <img class="frontImg" src="/KitchenSyncLogo.png" alt="Logo"> -->
-      <!-- <div class="text">
-        <span class="text-1">Every new friend is a <br> new adventure</span>
-        <span class="text-2">Let's get connected</span>
-      </div> -->
+
     </div>
     <div class="back">
       <img class="backImg" src="/KitchenSyncLogo.png" alt="Logo">
-      <!-- <div class="text">
-        <span class="text-1">Complete miles of journey <br> with one step</span>
-        <span class="text-2">Let's get started</span>
-      </div> -->
+
     </div>
   </div>
+
+  <!-- Forms -->
   <div class="forms">
     <div class="form-content">
 
@@ -55,13 +52,15 @@
               }
             </p>
 
-            <!-- <div class="text"><a href="#">Forgot password?</a></div> -->
+            <!-- Submit -->
             <div class="button input-box">
               <input type="submit" value="Login" (click)="login()">
             </div>
             <p class="error-message">
               @if (loginMessage) { {{ loginMessage}} }
             </p>
+
+            <!-- Link to signup form -->
             <div class="text sign-up-text">Don't have an account? <label for="flip">Signup now</label></div>
           </div>
         </form>
@@ -132,12 +131,15 @@
               }
             </p>
 
+            <!-- Submit -->
             <div class="button input-box">
               <input type="submit" value="Register" (click)="signup()">
             </div>
             <p class="error-message">
               @if (signupMessage) { {{signupMessage}} }
             </p>
+
+            <!-- Link to login form -->
             <div class="text sign-up-text">Already have an account? <label for="flip">Login now</label></div>
           </div>
         </form>

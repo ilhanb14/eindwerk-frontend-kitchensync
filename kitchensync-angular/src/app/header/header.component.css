@@ -4,11 +4,11 @@ header {
     align-items: center;
     padding: 10px;
     background-color: #6ab414;
-    position: fixed;
+    position: fixed; /* Make sure the header stays visible at the top */
     top: 0;
     left: 0;
     right: 0;
-    z-index: 100;
+    z-index: 100; /* Add a z-index so it's shown in front of all other components */
 }
 
 .title {

@@ -4,6 +4,7 @@ import { UsersService } from '../shared/users.service';
 import { FormsModule } from '@angular/forms';
 import { InvitationComponent } from "../invitation/invitation.component";
 import { InvitationsService } from '../shared/invitations.service';
+import { parseMarker } from '@fullcalendar/core/internal';
 
 @Component({
   selector: 'app-family',
@@ -31,6 +32,9 @@ export class FamilyComponent {
     this.getFamily()
   }
 
+  /** 
+  * Function to get all the members of a family with all info on them
+  */
   async getFamily() {
     this.loading = true; // Show loading message
     this.error = null; // Reset error
@@ -50,18 +54,25 @@ export class FamilyComponent {
     }
   }
 
-  async createFamily(naam: string) {
-    const response = await this.familiesService.addFamily(naam);
+  /**
+   * Create a new family with any name. Assign user to this family
+   * @param familyName 
+   */
+  async createFamily(familyName: string) {
+    // Add new family to database
+    const response = await this.familiesService.addFamily(familyName);
 
-    console.log(response);
-
+    // get the id of the new family
     this.familyId = Number(response.family_id);
 
-    console.log(this.familyId);
-
+    // Assign family_id to the user who made the family
     this.usersService.assignFamily(this.familyId)
   }
 
+  /**
+   * Send an invite to the user with the email emailInvite
+   * @param emailInvite 
+   */
   async invite(emailInvite: string) {
     // Reset inviteMessage
     this.inviteMessage = '';
@@ -73,11 +84,17 @@ export class FamilyComponent {
     this.inviteMessage = await response.message;
   }
 
+  /**
+   * Change the user type of someone
+   * @param userId the id of the person whose user_type_id you're trying to change
+   * @param userTypeId number you're trying to change the user_type_id to
+   */
   async changeUserType(userId: number, userTypeId: number) {
     try {
-      const response = await this.usersService.assignType(userId, userTypeId);
-      console.log(response)
-  
+      // Assign a new user_type to a user
+      await this.usersService.assignType(userId, userTypeId);
+      
+      // Change what is shown on the page with a signal. It only changes the member of the family with the same user_id
       this.family.update((members) =>
         members.map((member) =>
           member.id === userId ? { ...member, user_type: { id: userTypeId, type: userTypeId === 1 ? 'adult' : 'child' } } : member
@@ -87,12 +104,25 @@ export class FamilyComponent {
     }
   }
 
-  async removeFromFamily (userId: number) {
+  /**
+   * Remove someone else from your family
+   * @param userId id of the person you're trying to remove
+   * @param name name of the user that's being removed
+   */
+  async removeFromFamily (userId: number, name: string) {
     try {
-      const response = await this.usersService.removeFromFamily(userId);
 
-      this.family.update((members) => 
-        members.filter((member) => member.id !== userId));
+      // Make sure the user should be removed
+      let confirmed = confirm("Are you sure you want to remove\"" + name + "\" from your family?" );
+
+      if (confirmed) {
+        // Remove user from family
+        await this.usersService.removeFromFamily(userId);
+
+        // Don't show user in family anymore. Signal filters out the user whit this user_id
+        this.family.update((members) => 
+          members.filter((member) => member.id !== userId));
+      }
     } catch (err) {
       console.error("Failed to remove member from family:", err);
     }

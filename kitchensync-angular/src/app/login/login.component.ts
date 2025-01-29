@@ -33,13 +33,20 @@ export class LoginComponent {
     private router: Router
   ) { }
 
+  /**
+   * Handles the login process.
+   */
   async login() {
     try {
+      // Call the login service
       const data = await this.loginService.login(this.emailLogin, this.passwordLogin);
+
+      // Check if the login was successful
       if (data) {
+        // Add a token to the localStorage so you can stay logged in
         localStorage.setItem('token', data.remember_token);
   
-        //Get the redirect URL from localStorage or use a default value
+        //Get the redirect URL from localStorage go default to home
         const redirectUrl = localStorage.getItem('redirectUrl') || '/home';
         localStorage.removeItem('redirectUrl'); // Clean up
   
@@ -55,7 +62,13 @@ export class LoginComponent {
     }
   }
 
+  /**
+   * Make a new user
+   * @returns if there is an error in the input to stop the function
+   */
   signup() {
+
+    // Error messages
     if (!this.firstNameSignup) {
       this.signupMessage = 'Invalid first name.';
       return
@@ -77,6 +90,7 @@ export class LoginComponent {
 
     if (this.passwordSignup === this.passwordSignupVerify) {
       try {
+        // Add user to database
         this.loginService.register(this.emailSignup, this.passwordSignup, this.firstNameSignup, this.lastNameSignup);
         this.signupMessage = 'Registered successfully!'
       } catch (error) {
@@ -87,18 +101,30 @@ export class LoginComponent {
     }
   }
 
+  /**
+   * Logs the user out
+   */
   logout() {
+    // Use the logout service to change the token in the database. This requires having the right token
     this.loginService.logout(localStorage.getItem('token') || '');
 
+    // Remove the token from localStorage
     localStorage.removeItem('token');
 
     this.router.navigate(['/login']);
   }
 
+  /**
+   * Changes whether a string is visible or shown as ****
+   * @param input the string that needs to change from visible to hidden or vice versa
+   */
   togglePassword(input: string): void {
     this.showPassword[input] = !this.showPassword[input];
   }
 
+  /**
+   * Toggle between login and signup
+   */
   toggleForms(): void {
     this.showSignup = !this.showSignup
 
