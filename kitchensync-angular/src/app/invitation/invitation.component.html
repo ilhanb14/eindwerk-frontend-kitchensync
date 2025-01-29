@@ -1,11 +1,15 @@
+
 <div class="max-w-3xl p-6">
     <h2 class="text-2xl font-bold mb-6">Family Invitations</h2>
     
+    <!-- Check if there are invitations -->
     @if (!invitations) {
       <div class="text-gray-500 text-center p-8 bg-gray-50 rounded-lg">
         No pending invitations
       </div>
     } @else {
+
+      <!-- Make a list of all invitations -->
       <ul class="space-y-2">
         @for (invitation of invitations(); track $index) {     
           <li 
@@ -13,6 +17,8 @@
             class="bg-white rounded-lg shadow-sm border border-gray-200 p-4 hover:shadow-md transition-shadow"
           >
             <div class="flex justify-between items-center">
+              
+              <!-- Info on inviter -->
               <div class="space-y-1">
                 <div class="font-medium">
                   <span class="text-gray-600">Invited by:</span> {{invitation.inviter.first_name}} {{invitation.inviter.last_name}}
@@ -22,21 +28,24 @@
                 </div>
               </div>
               
+              <!-- buttons to accept or refuse -->
               <div class="flex gap-2">
+
+                <!-- The accept button changes you family_id to the id of the family that invited you -->
                 <button
                   (click)="handleAccept(invitation.id)"
                   
                   class="flex items-center gap-1 px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                 >
-                 
                   Accept
                 </button>
+
+                <!-- Refuse the invitation, remove it from the page and from the database -->
                 <button
                   (click)="handleRefuse(invitation.id)"
                   
                   class="flex items-center gap-1 px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-                >
-                  
+                >                  
                   Refuse
                 </button>
               </div>

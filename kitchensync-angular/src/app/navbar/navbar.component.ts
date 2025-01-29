@@ -10,12 +10,18 @@ import { ClickOutsideDirective } from '../click-outside.directive';
   styleUrl: './navbar.component.css'
 })
 export class NavbarComponent {
-  isDropdownOpen = false;
+  isDropdownOpen = false; // Dropdown is by default not shown
 
+  /**
+   * Change whether the dropdown menu is shown
+   */
   toggleDropdown() {
     this.isDropdownOpen = !this.isDropdownOpen;
   }
 
+  /**
+   * Closes the dropdown menu
+   */
   closeDropdown() {
     this.isDropdownOpen = false;
   }

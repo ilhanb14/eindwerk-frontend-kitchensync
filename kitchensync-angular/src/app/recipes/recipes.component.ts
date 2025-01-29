@@ -28,6 +28,9 @@ export class RecipesComponent {
     this.fetchRecipes();
   }
 
+  /**
+   * Fetches recipes from Spoonacular API
+   */
   async fetchRecipes() {
     this.loading = true; // Show loading message
     this.error = null; // Reset error
@@ -42,6 +45,10 @@ export class RecipesComponent {
     }
   }
 
+  /**
+   * Get details on a specific recipe for summary
+   * @param id spoonacular id if the meal you want more info on
+   */
   async getRecipeDetails(id: number): Promise<void> {
     try {
       if (this.expandedMeal === id) {

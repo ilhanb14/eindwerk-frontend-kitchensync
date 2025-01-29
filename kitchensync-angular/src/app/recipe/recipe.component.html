@@ -1,131 +1,176 @@
 <div class="max-w-4x1 p-6">
-<!-- First, add a check for if recipe exists to avoid errors -->
-@if (recipe) {
-
-
-  <div class="grid lg:grid-cols-2 grid-cols-1 rounded-lg shadow-md border p-4 lg:p-6 bg-[#c5f38f] transition-shadow">
-
-    <img class="p-2 rounded-lg" [src]="recipe.image" [alt]="recipe.title">
-    <div class="p-2">
-      <h2 class="text-3xl font-bold mb-4">{{ recipe.title }}</h2>
-      <div class="recipe-details">
-        <div [innerHTML]="recipe.summary | safeHtml"></div>
-      </div>
-    </div>
-  </div>
-  <div class="flex justify-center space-x-10 my-4 text-lg">
-    <!-- Prep Time -->
-    <div class="flex items-center space-x-3">
-      <i class="fa-regular fa-clock text-2xl"></i>
-      <div class="text-start">
-        <div class="text-sm font-medium">Prep Time</div>
-        <div class="text-md">{{ recipe.readyInMinutes }} minutes</div>
-      </div>
-    </div>
-
-    <!-- Servings -->
-    <div class="flex items-center space-x-3">
-      <i class="fa-solid fa-person text-2xl"></i>
-      <div class="text-start">
-        <div class="text-sm font-medium">Servings</div>
-        <div class="text-md">{{ recipe.servings }}</div>
-      </div>
-    </div>
-
-    <div class="flex justify-center space-x-6 my-4">
-      <div class="flex space-x-3">
-        <button id="like-button" class="flex items-center gap-1 px-4 py-2 mx-2 bg-green-600 text-white rounded-md hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors" (click)="like()">Like</button>
-        <button id="unlike-button" class="flex items-center gap-1 px-4 py-2 mx-2 bg-red-600 text-white rounded-md hover:bg-red-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors" (click)="unlike()" style="display: none">Unlike</button>
-      </div>
-      <!-- Wrapper div to avoid triggering hideRequestForm when clicking request button -->
-      <div  clickOutside (clickOutside)="hideRequestForm()">
-        <button id="request-button" class="flex items-center gap-1 px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors" (click)="showRequestForm()">Request</button>
-
-        <div id="request-form" style="display:none">
-          <div class="space-y-1 flex items-center">
-            <span class="font-medium mr-3">Date: </span>
-            <input class="bg-gray-50 border max-w-32 border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" type="date" id="date" [disabled]="!includeDate">
-          </div>
-          <div class="space-y-1 flex items-center mb-1">
-            <span class="font-small mr-3">Include date?</span>
-            <input type="checkbox" id="include-date" [(ngModel)]="includeDate">
-          </div>
-          <div class="space-y-1 flex items-center">
-            <span class="font-medium mr-3">Mealtime: </span>
-            <select id="mealtime-option">
-                <option value="none">None</option>
-                @for (mealtime of mealtimes; track $index) {
-                    <option [value]="mealtime.id">{{mealtime.mealtime}}</option>
-                }
-            </select>
-          </div>
-          <div>
-            <span class="font-medium mr-3">Comment: </span>
-            <textarea class="bg-gray-50 border max-w-32 my-2 border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" id="comment"></textarea>
-          </div>
-          <button class="flex items-center gap-1 px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors" (click)="request()">Make request</button>
+  <!-- Check if recipe exists -->
+  @if (recipe) {
+    <div class="grid lg:grid-cols-2 grid-cols-1 rounded-lg shadow-md border p-4 lg:p-6 bg-[#c5f38f] transition-shadow">
+      <img class="p-2 rounded-lg" [src]="recipe.image" [alt]="recipe.title">
+      <div class="p-2">
+        <h2 class="text-3xl font-bold mb-4">{{ recipe.title }}</h2>
+        <div class="recipe-details">
+          <div [innerHTML]="recipe.summary | safeHtml"></div>
         </div>
       </div>
     </div>
-  </div>
+    <div class="flex justify-center space-x-10 my-4 text-lg">
 
-  <div class="flex flex-wrap justify-between p-4 lg:p-6">  
-    <div class="w-full md:w-[38%] rounded-lg shadow-md border space-x-2 p-8 transition-shadow">
-      <h3 class="text-2xl font-bold mb-4">Ingredients:</h3>
-      <div class="flex items-center justify-between p-3 mb-2 bg-[#c5f38f] rounded-lg">
-        <div class="font-medium text-lg"> {{ servings }} people </div>
-        <div class="flex items-center space-x-2">
-          <button
-            class="w-10 h-10 flex items-center justify-center bg-white rounded-full hover:bg-[#6ab414] transition-all"
-            type="button"
-            (click)="decreaseServing()"
-          >
-            <i class="fa-solid fa-minus"></i>
-          </button>
-          <button
-            class="w-10 h-10 flex items-center justify-center bg-white rounded-full hover:bg-[#6ab414] transition-all"
-            type="button"
-            (click)="increaseServing()"
-          >
-            <i class="fa-solid fa-plus"></i>
-          </button>
+      <!-- Prep Time -->
+      <div class="flex items-center space-x-3">
+        <i class="fa-regular fa-clock text-2xl"></i>
+        <div class="text-start">
+          <div class="text-sm font-medium">Prep Time</div>
+          <div class="text-md">{{ recipe.readyInMinutes }} minutes</div>
         </div>
       </div>
-      <ul>
-        @for (ingredient of recipe.extendedIngredients; track $index) {
-        <li class="flex justify-between">
-          <div class="font-semibold">{{ ingredient.nameClean }}:</div>
-          <div class="">
-            @if (ingredient.measures.metric) {
-              <div> {{ changeAmount(ingredient.measures.metric.amount) }} {{ ingredient.measures.metric.unitLong }} </div>
-            } @else {
-            <div> {{ ingredient.amount }} {{ ingredient.unit }} </div>
-            }
-          </div>
-        </li>
-        }
 
-      </ul>
+      <!-- Servings -->
+      <div class="flex items-center space-x-3">
+        <i class="fa-solid fa-person text-2xl"></i>
+        <div class="text-start">
+          <div class="text-sm font-medium">Servings</div>
+          <div class="text-md">{{ recipe.servings }}</div>
+        </div>
+      </div>
+
+      <!-- Buttons -->
+      <div class="flex justify-center space-x-6 my-4">
+
+        <!-- (Un)like button -->
+        <div class="flex space-x-3">
+          <button id="like-button" class="flex items-center gap-1 px-4 py-2 mx-2 bg-green-600 text-white rounded-md hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors" (click)="like()">Like</button>
+          <button id="unlike-button" class="flex items-center gap-1 px-4 py-2 mx-2 bg-red-600 text-white rounded-md hover:bg-red-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors" (click)="unlike()" style="display: none">Unlike</button>
+        </div>
+
+        <!-- Wrapper div to avoid triggering hideRequestForm when clicking request button -->
+        <div  clickOutside (clickOutside)="hideRequestForm()">
+
+          <!-- Request button -->
+          <button id="request-button" class="flex items-center gap-1 px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors" (click)="showRequestForm()">Request</button>
+
+          <!-- Request form -->
+          <div id="request-form" style="display:none">
+            <div class="space-y-1 flex items-center">
+              <span class="font-medium mr-3">Date: </span>
+              <input class="bg-gray-50 border max-w-32 border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" type="date" id="date" [disabled]="!includeDate">
+            </div>
+            <div class="space-y-1 flex items-center mb-1">
+              <span class="font-small mr-3">Include date?</span>
+              <input type="checkbox" id="include-date" [(ngModel)]="includeDate">
+            </div>
+            <div class="space-y-1 flex items-center">
+              <span class="font-medium mr-3">Mealtime: </span>
+              <select id="mealtime-option">
+                  <option value="none">None</option>
+                  @for (mealtime of mealtimes; track $index) {
+                      <option [value]="mealtime.id">{{mealtime.mealtime}}</option>
+                  }
+              </select>
+            </div>
+            <div>
+              <span class="font-medium mr-3">Comment: </span>
+              <textarea class="bg-gray-50 border max-w-32 my-2 border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" id="comment"></textarea>
+            </div>
+            <button class="flex items-center gap-1 px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors" (click)="request()">Make request</button>
+          </div>
+
+        </div>
+
+        <!-- Wrapper div to avoid triggering hidePlanForm when clicking plan button -->
+        <div  clickOutside (clickOutside)="hidePlanForm()">
+
+          <!-- Plan meal button -->
+          <button id="request-button" class="flex items-center gap-1 px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors" (click)="showPlanForm()">Plan Meal</button>
+          
+          <!-- Plan form -->
+          <div id="plan-form" style="display:none">
+            <div class="space-y-1 flex items-center">
+              <span class="font-medium mr-3">Date: </span>
+              <input class="bg-gray-50 border max-w-32 border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" type="date" id="date-plan" [disabled]="!includeDate">
+            </div>
+            <div class="space-y-1 flex items-center">
+              <span class="font-medium mr-3">Mealtime: </span>
+              <select id="mealtime-option-plan">
+                  @for (mealtime of mealtimes; track $index) {
+                      <option [value]="mealtime.id">{{mealtime.mealtime}}</option>
+                  }
+              </select>
+            </div>
+            <div>
+              <span class="font-medium mr-3">Servings: </span>
+              <input type="number" class="bg-gray-50 border max-w-32 my-2 border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" id="servings">
+            </div>
+            <button class="flex items-center gap-1 px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors" (click)="plan()">Plan meal</button>
+          </div>
+          
+
+        </div>
+      </div>
     </div>
 
+    <!-- Ingredients and instructions -->
+    <div class="flex flex-wrap justify-between p-4 lg:p-6">
 
-    <div class="w-full md:w-[58%] rounded-lg shadow-md border p-8 bg-[#c5f38f] transition-shadow">
-      <h3 class="text-2xl font-bold mb-4">Instructions:</h3>
-      @if (recipe.analyzedInstructions) {
-        <ol class="list-decimal">
-          @for (instruction of recipe.analyzedInstructions[0].steps; track $index) {
-          <li>
-            {{ instruction.step }}
+      <!-- Ingredients -->
+      <div class="w-full md:w-[38%] rounded-lg shadow-md border space-x-2 mb-4 p-8 transition-shadow">
+        <h3 class="text-2xl font-bold mb-4">Ingredients:</h3>
+        <div class="flex items-center justify-between p-3 mb-2 bg-[#c5f38f] rounded-lg">
+          <div class="font-medium text-lg"> {{ servings }} people </div>
+
+          <!-- Serving size -->
+          <div class="flex items-center space-x-2">
+            <button
+              class="w-10 h-10 flex items-center justify-center bg-white rounded-full hover:bg-[#6ab414] transition-all"
+              type="button"
+              (click)="decreaseServing()"
+            >
+              <i class="fa-solid fa-minus"></i>
+            </button>
+            <button
+              class="w-10 h-10 flex items-center justify-center bg-white rounded-full hover:bg-[#6ab414] transition-all"
+              type="button"
+              (click)="increaseServing()"
+            >
+              <i class="fa-solid fa-plus"></i>
+            </button>
+          </div>
+        </div>
+
+        <!-- Ingredient list -->
+        <ul>
+          @for (ingredient of recipe.extendedIngredients; track $index) {
+          <li class="flex justify-between">
+            <div class="font-semibold">{{ ingredient.nameClean }}:</div>
+            <div class="">
+              @if (ingredient.measures.metric) {
+                <div> {{ changeAmount(ingredient.measures.metric.amount) }} {{ ingredient.measures.metric.unitLong }} </div>
+              } @else {
+              <div> {{ ingredient.amount }} {{ ingredient.unit }} </div>
+              }
+            </div>
           </li>
           }
-        </ol>
-      }
-    </div>
-  </div>
-    <div>
+        </ul>
+      </div>
 
-      <div class="border border-gray-300 shadow-sm rounded-lg overflow-hidden max-w-sm mx-auto mt-16">
+      <!-- Instructions -->
+      <div class="w-full md:w-[58%] rounded-lg shadow-md border mb-4 p-8 bg-[#c5f38f] transition-shadow">
+        <h3 class="text-2xl font-bold mb-4">Instructions:</h3>
+        @if (recipe.analyzedInstructions) {
+          <ol class="list-decimal">
+            @for (instruction of recipe.analyzedInstructions[0].steps; track $index) {
+            <li>
+              {{ instruction.step }}
+            </li>
+            }
+          </ol>
+        }
+      </div>
+    </div>
+
+    <!-- Nutrition values -->
+    <div>
+      <div class="border border-gray-300 shadow-sm rounded-lg overflow-hidden max-w-sm mx-auto">
         <table class="w-full text-sm leading-5">
+
+          <!-- Table header -->
           <thead class="bg-gray-100">
             <tr>
               <th class="py-3 px-4 text-left font-medium text-gray-600">Nutrient</th>
@@ -134,6 +179,8 @@
               <th class="py-3 px-4 text-left font-medium text-gray-600">Percentage of daily value (serving)</th>
             </tr>
           </thead>
+
+          <!-- Table body: Nutrient, amount (100g), amount per serving, percentage of daily value -->
           <tbody>
             <tr>
               <td class="py-3 px-4 text-left font-medium text-gray-600">Calories</td>
@@ -187,12 +234,11 @@
         </table>
       </div>    
     </div>
-}
-  
-  <!-- Optional: Show loading state -->
-@if (!recipe) {
-    <p>Loading recipe...</p>
-}
-
+  }
+    
+  <!-- Show loading state -->
+  @if (!recipe) {
+      <p>Loading recipe...</p>
+  }
 </div>
 

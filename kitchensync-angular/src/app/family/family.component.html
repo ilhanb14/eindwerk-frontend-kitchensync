@@ -1,86 +1,94 @@
+<!-- Family information -->
 <div class="max-w-3xl p-4 lg:p-6">    
-  <h2 class="text-3xl font-bold mb-4">Family</h2>  
+    <h2 class="text-3xl font-bold mb-4">Family</h2>  
+
     <!-- Show loading message -->
     @if (loading) {
         <p>Loading family...</p>
     }
+
     <h3 class="text-2xl font-bold my-4">Family Members</h3>
-    <ul class="family-list space-y-2">
-        @if (familyId) {
+    
+    <!-- Only show if in a family -->
+    @if (familyId) {
+        
+        <!-- Show family members -->
+        <ul class="family-list space-y-2">
             @for (member of family(); track $index) {
                 <li 
-            key={index} 
-            class="bg-white rounded-lg shadow-sm border border-gray-200 p-4 hover:shadow-md transition-shadow"
-          >
-            <div class="flex justify-between items-center">
-              <div class="space-y-1">
-                <div class="font-medium">
-                  <span class="text-gray-600">Member:</span> {{member.first_name}} {{member.last_name}}
-                </div>
-                <div>
-                    @if (member.user_type) {
-                        <span class="text-gray-600">Type:</span> {{member.user_type.type}}
+                  key={index} 
+                  class="bg-white rounded-lg shadow-sm border border-gray-200 p-4 hover:shadow-md transition-shadow"
+                >
+                  <div class="flex justify-between items-center">
+                    <div class="space-y-1">
+                      <div class="font-medium">
+                        <span class="text-gray-600">Member:</span> {{member.first_name}} {{member.last_name}}
+                      </div>
+                      <div>
+                          @if (member.user_type) {
+                              <span class="text-gray-600">Type:</span> {{member.user_type.type}}
+                          }
+                          @else {
+                              <span class="text-gray-600">Type:</span> assign a type
+                          }
+                      </div>
+                    </div>
+                    
+                    <!-- If you're an adult, you can change the type on other members of your family or remove them. 
+                    Can't change yourself so there's always an adult in every family. -->
+                    @if (userType === 1 && userId != member.id) {
+                      <div class="flex gap-2">
+                        <button
+                          (click)="changeUserType(member.id, 1)"                          
+                          class="flex items-center gap-1 px-4 py-2 bg-gray-600 text-white rounded-md hover:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                        >                        
+                          Adult
+                        </button>
+                        <button
+                          (click)="changeUserType(member.id, 2)"                          
+                          class="flex items-center gap-1 px-4 py-2 bg-gray-600 text-white rounded-md hover:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                        >                        
+                          Child
+                        </button>
+                        <button
+                          (click)="removeFromFamily(member.id, member.first_name)"                      
+                          class="flex items-center gap-1 px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                        >                        
+                          Remove
+                        </button>
+                      </div>
                     }
-                    @else {
-                        <span class="text-gray-600">Type:</span> assign a type
-                    }
-                </div>
-              </div>
-              
-              @if (userType === 1 && userId != member.id) {
-                <div class="flex gap-2">
-                  <button
-                    (click)="changeUserType(member.id, 1)"
-                    
-                    class="flex items-center gap-1 px-4 py-2 bg-gray-600 text-white rounded-md hover:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-                  >
-                  
-                    Adult
-                  </button>
-                  <button
-                    (click)="changeUserType(member.id, 2)"
-                    
-                    class="flex items-center gap-1 px-4 py-2 bg-gray-600 text-white rounded-md hover:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-                  >
-                    
-                    Child
-                  </button>
-                  <button
-                    (click)="removeFromFamily(member.id)"
-                  
-                    class="flex items-center gap-1 px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-                  >
-                  
-                    Remove
-                  </button>
-                </div>
-              }
-            </div>
-          </li>
+                  </div>
+                </li>
             }
         
+            <!-- Send someone an invitation by entering their email -->
             <h3 class="text-lg font-bold my-4">Add a new member</h3>
             <div class="gap-6">
                 <label for="first_name" class="block mb-2 font-medium text-gray-900 dark:text-white">Email new member</label>
                 <input type="text" id="email" class="bg-gray-50 border max-w-sm border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"  
                     placeholder="Email" [(ngModel)]="emailInvite" required />
             </div>
+
+            <!-- Message that shows if the invitation went through -->
             <p class="text-sm text-red-500"> @if (inviteMessage) { {{inviteMessage}} }
             </p>
             <p><button (click)="invite(emailInvite)" class="flex items-center gap-1 px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors">Add member</button> </p>
-        } @else {
-            <div>
-                <div class="container">
-                    <h3>Create a family</h3>
-                    <div>
-                        <p><input class="form-control" type="text" [(ngModel)]="familyName" placeholder="Familienaam"></p>
-                        <p><button (click)="createFamily(familyName)" class="flex items-center gap-1 px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors">Create family</button> </p>
-                    </div>
+        </ul>
+
+    <!-- If there is no family_id, show the create family form -->
+    } @else {
+        <div>
+            <div class="container">
+                <h3>Create a family</h3>
+                <div>
+                    <p><input class="form-control" type="text" [(ngModel)]="familyName" placeholder="Familienaam"></p>
+                    <p><button (click)="createFamily(familyName)" class="flex items-center gap-1 px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors">Create family</button> </p>
                 </div>
             </div>
-        }
-    </ul>
-
+        </div>
+    }
 </div>
 
+<!-- Show invitations -->
 <app-invitation></app-invitation>

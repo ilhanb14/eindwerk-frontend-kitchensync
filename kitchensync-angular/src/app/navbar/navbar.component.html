@@ -1,8 +1,14 @@
 <head>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
 </head>
+
+<!-- Dropdown menu. Closes when clicked outside -->
 <div class="dropdown" clickOutside (clickOutside)="closeDropdown()">
+
+    <!-- Icon -->
     <i class="fa fa-bars" (click)="toggleDropdown()"></i>
+
+    <!-- Links to other components -->
     <ul class="dropdown-menu" [class.show]="isDropdownOpen">
         <li><a routerLink="/home" routerLinkActive="active-link">Home</a></li>
         <li><a routerLink="/recipes" routerLinkActive="active-link">Recipes</a></li>
