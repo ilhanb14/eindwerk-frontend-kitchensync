@@ -82,7 +82,7 @@
             <div class="container">
                 <h3>Create a family</h3>
                 <div>
-                    <p><input class="form-control" type="text" [(ngModel)]="familyName" placeholder="Familienaam"></p>
+                    <p><input class="form-control" type="text" class="bg-gray-50 border max-w-sm border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 my-2" [(ngModel)]="familyName" placeholder="Family name"></p>
                     <p><button (click)="createFamily(familyName)" class="flex items-center gap-1 px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors">Create family</button> </p>
                 </div>
             </div>
