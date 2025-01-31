@@ -37,7 +37,7 @@ export class CalendarComponent implements AfterViewInit {
 
   recipes: SpoonacularRecipe[] = [];
   currentEvents: EventApi[] = [];
-  familyId = 4;  // Replace with actual family ID from authentication
+  familyId: number = Number(sessionStorage.getItem('family_id'));
 
   calendarOptions: CalendarOptions = {
     plugins: [dayGridPlugin, timeGridPlugin, interactionPlugin],
@@ -93,6 +93,7 @@ export class CalendarComponent implements AfterViewInit {
 
   async loadPlannedMeals() {
     try {
+      console.log('Family ID:', this.familyId);
       const plannedMeals = await this.plannedMealsService.getByFamily(this.familyId);
       const recipeIds = plannedMeals.map((meal: any) => meal.meal_id);
       const meals = await this.spoonacularService.getMealsById(recipeIds);
@@ -107,8 +108,8 @@ export class CalendarComponent implements AfterViewInit {
 
         this.calendarOptions.events = [];
         
-        for (let meal of meals) {
-          const plannedMeal = plannedMeals.find((plannedMeal: any) => plannedMeal.meal_id == meal.id);
+        for (let plannedMeal of plannedMeals) {
+          const meal = meals.find((meal: any) => plannedMeal.meal_id == meal.id);
           if (plannedMeal) { 
             const eventDate = new Date(plannedMeal.date);
             const eventEnd = new Date(new Date(eventDate).getTime() + 3 * 60 * 60 * 1000);
