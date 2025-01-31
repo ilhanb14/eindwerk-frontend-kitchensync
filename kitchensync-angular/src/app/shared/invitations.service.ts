@@ -8,6 +8,13 @@ export class InvitationsService {
 
   constructor() { }
 
+  /**
+   * Invite someone to a family
+   * @param email email of the person you're inviting
+   * @param inviterId id of the person who's trying to invite soemone
+   * @param familyId id of the family you're inviting someone to
+   * @returns whether it was successful and a message
+   */
   async invite(email: string, inviterId: string, familyId: string) {
     try {
       const response = await fetch(`${this.url}/invitations`, {
@@ -42,6 +49,11 @@ export class InvitationsService {
     }
   }
 
+  /**
+   * get all the invitations for a user
+   * @param userId id of the user who's being invited
+   * @returns all the invitations with information on the inviter, family and status of the invitation
+   */
   async getUserInvitations(userId: number) {
     try {
       const response = await fetch(`${this.url}/invitations/${userId}`);
@@ -55,6 +67,12 @@ export class InvitationsService {
 
   }
 
+  /**
+   * Change the status of an invitation to accepted
+   * @param invitationId the id of the invitation that is updated
+   * @param status the status you want to change it to, now it's accepted by default
+   * @returns can return a error message or a success message
+   */
   async updateStatus(invitationId: number, status: 'accepted') {
     try {
       const response = await fetch(`${this.url}/invitations/${invitationId}`, {
@@ -78,6 +96,10 @@ export class InvitationsService {
     }
   }
 
+  /**
+   * Delete an invitation
+   * @param invitationId invitation that will be deleted
+   */
   async delete(invitationId: number) {
     try {
         await fetch(`${this.url}/invitations/${invitationId}`, {

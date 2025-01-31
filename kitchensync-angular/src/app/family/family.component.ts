@@ -66,7 +66,10 @@ export class FamilyComponent {
     this.familyId = Number(response.family_id);
 
     // Assign family_id to the user who made the family
-    this.usersService.assignFamily(this.familyId)
+    this.usersService.assignFamily(this.familyId);
+
+    // Make the user who started the family an adult
+    this.usersService.assignType(this.userId, 1);
   }
 
   /**
