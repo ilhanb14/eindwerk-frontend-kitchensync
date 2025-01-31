@@ -28,9 +28,10 @@ export class RequestComponent {
     private mealtimesService: MealtimesService, private cuisinesService : CuisinesService,
     private spoonacularService: SpoonacularService) {
     // Get all cuisines and mealtimes from database
-    // Mealtimes are also used in loadRequests so each request has it's mealtime as a string
-    this.fetchCuisines();
-    this.fetchMealtimes().then(response => this.loadRequests());
+    // Cuisines and mealtimes are also used in loadRequests so each request has it's values as strings
+    this.fetchCuisines()
+    .then(response => this.fetchMealtimes())
+    .then(response => this.loadRequests());
   }
 
   /**
@@ -41,7 +42,7 @@ export class RequestComponent {
     await this.fetchRequests();
 
     // Run these functions in parallel and don't continue until all are done
-    await Promise.all([this.addRequestMealtimes(), this.addRequestUserNames(), this.addRequestMealData()]);
+    await Promise.all([this.addRequestMealtimes(), this.addRequestCuisines(), this.addRequestUserNames(), this.addRequestMealData()]);
 
     this.requestsLoaded = true;
   }
@@ -84,11 +85,20 @@ export class RequestComponent {
   }
 
   /**
-   * Assign mealtime strings to each request for display
+   * Assign mealtime strings to each request that has a specific meatime for display
    */
   async addRequestMealtimes() {
     for (let request of this.requests) {
       request.mealtime = this.mealtimes.find(mealtime => mealtime.id == request.mealtime_id)?.mealtime;
+    }
+  }
+
+  /**
+   * Assign cuisine strings to each request that has a specific cuisine for display
+   */
+  async addRequestCuisines() {
+    for (let request of this.requests) {
+        request.cuisine = this.cuisines.find(cuisine => cuisine.id == request.cuisine_id)?.name;
     }
   }
 
@@ -145,7 +155,7 @@ export class RequestComponent {
       family_id: this.familyId,
       // These next values will be included but some might be null or "" which is fine
       mealtime_id: mealtime,
-      cuisine: cuisine,
+      cuisine_id: cuisine,
       comment: comment,
       date: date
     }
