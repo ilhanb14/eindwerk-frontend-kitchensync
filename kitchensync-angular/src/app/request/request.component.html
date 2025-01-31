@@ -29,7 +29,7 @@
             <select id="cuisine-option">
                 <option value="none">None</option>  <!-- Default option none -->
                 @for(cuisine of cuisines; track $index) {   <!-- All cuisine options loaded from db -->
-                    <option [value]="cuisine.name">{{cuisine.name}}</option>
+                    <option [value]="cuisine.id">{{cuisine.name}}</option>
                 }
             </select>
         </div>

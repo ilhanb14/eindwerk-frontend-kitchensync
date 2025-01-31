@@ -11,7 +11,7 @@ export class RequestsService {
   /**
    * Get all requests made by members of a specific family
    * @param familyId
-   * @returns Array of requests as {id, user_id, family_id, date, mealtime_id, comment, meal_id, cuisine}
+   * @returns Array of requests as {id, user_id, family_id, date, mealtime_id, comment, meal_id, cuisine_id}
    */
   async getByFamily(familyId: number) {
     try {
@@ -24,7 +24,7 @@ export class RequestsService {
 
   /**
    * Add a new request
-   * @param request Object with {user_id, family_id, date, mealtime_id, comment, meal_id, cuisine}
+   * @param request Object with {user_id, family_id, date, mealtime_id, comment, meal_id, cuisine_id}
    * - date and mealtime are optional
    * - Should include at least one of comment, meal_id, cuisine
    */
